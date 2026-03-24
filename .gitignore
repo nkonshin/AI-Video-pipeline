@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Environment
+.env
+.venv/
+venv/
+
+# Output
+output/images/*
+output/videos/*
+output/audio/*
+output/final/*
+!output/**/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OAuth
+client_secret.json
+token.json
+*.pickle
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,125 @@
+# =============================================
+# AI Video Pipeline — Character Remix: Шрек
+# =============================================
+# Шрек записывает рэп-альбом в студии — вирусный контент
+#
+# Запуск:
+#   videopipe run configs/character_remix_shrek.yaml
+
+scenario:
+  title: "Шрек записывает альбом"
+  series_name: "Приключения Шрека"
+  episode_number: 1
+
+  style_prompt: >-
+    cinematic digital art, highly detailed, dramatic lighting,
+    viral social media content style, engaging and eye-catching,
+    movie-quality render, vibrant colors
+
+  negative_prompt: >-
+    blurry, low quality, text, watermark, deformed, amateur, cartoon
+
+  character_descriptions:
+    Шрек: "Shrek the green ogre from the animated movie, highly detailed, expressive face, muscular, recognizable character"
+
+  scenes:
+    - scene_id: scene_01
+      description: "Шрек входит в студию звукозаписи как настоящая звезда"
+      image_prompt: >-
+        Shrek the green ogre entering a professional music recording studio,
+        wearing sunglasses and a gold chain, confident swagger pose,
+        dramatic studio lighting, professional microphone visible,
+        cinematic shot, highly detailed
+      voiceover_text: >-
+        Шрек решил, что болото — это прошлое.
+        Теперь он идёт покорять музыкальный мир!
+      duration: 5.0
+      camera_motion: "slow zoom in"
+      transition: crossfade
+
+    - scene_id: scene_02
+      description: "Шрек надевает наушники и начинает читать рэп"
+      image_prompt: >-
+        Shrek the green ogre wearing professional headphones, rapping passionately
+        into a studio microphone, recording booth with soundproofing,
+        emotional performance, dramatic lighting from above,
+        cinematic close-up shot
+      voiceover_text: >-
+        Он надел наушники, подошёл к микрофону...
+        и выдал такой флоу, что звукорежиссёр потерял дар речи!
+      duration: 5.0
+      transition: crossfade
+
+    - scene_id: scene_03
+      description: "Шрек слушает свой трек и танцует"
+      image_prompt: >-
+        Shrek the green ogre dancing in a recording studio, listening to his own
+        music through speakers, happy and proud expression, studio monitors showing
+        audio waveforms, cool lighting with purple and blue tones,
+        cinematic wide shot
+      voiceover_text: >-
+        Когда Шрек услышал свой трек на колонках...
+        Он не смог удержаться и начал танцевать!
+      duration: 5.0
+      transition: crossfade
+
+    - scene_id: scene_04
+      description: "Шрек выходит из студии — толпа фанатов ждёт!"
+      image_prompt: >-
+        Shrek the green ogre walking out of a recording studio into a crowd of
+        excited fans, celebrity paparazzi moment, camera flashes, fans holding
+        signs, evening city lights in background, cinematic dramatic shot,
+        epic moment
+      voiceover_text: >-
+        А когда Шрек вышел из студии — его уже ждали фанаты!
+        Новая звезда рэпа родилась на болоте!
+        Подпишись, чтобы увидеть, что будет дальше!
+      duration: 6.0
+      transition: fade_black
+
+image_model:
+  model_id: "black-forest-labs/flux-1.1-pro"
+  width: 1080
+  height: 1920
+  num_inference_steps: 28
+  guidance_scale: 3.5
+  output_format: png
+
+video_model:
+  model_id: "minimax/video-01-live"
+  duration: 5
+  fps: 24
+
+tts:
+  engine: edge-tts
+  voice: ru-RU-DmitryNeural
+  rate: "+8%"
+
+subtitles:
+  enabled: true
+  font_size: 56
+  stroke_width: 3
+  position: bottom
+  max_chars_per_line: 28
+
+music:
+  enabled: false
+
+publish_targets:
+  - platform: telegram
+    enabled: true
+    hashtags: [нейросеть, шрек, рэп, ии, вирусное]
+  - platform: instagram
+    enabled: true
+    hashtags: [нейросеть, шрек, рэп, рек, рекомендации, тренд2026, вирусное]
+  - platform: youtube
+    enabled: true
+    hashtags: [Shorts, Shrek, AI, рэп]
+  - platform: vk
+    enabled: true
+    hashtags: [нейросеть, шрек, рэп, ии]
+  - platform: tiktok
+    enabled: true
+    hashtags: [нейросеть, шрек, рэп, тренд, вирусное]
+
+output_dir: "./output"

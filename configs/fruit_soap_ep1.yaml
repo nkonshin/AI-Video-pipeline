@@ -1,0 +1,159 @@
+# ==============================================
+# AI Video Pipeline — Fruit Soap Opera Episode 1
+# ==============================================
+# Тренд русского Инстаграма: мультсериал с фруктами и овощами
+#
+# Запуск:
+#   videopipe run configs/fruit_soap_ep1.yaml
+#   videopipe run configs/fruit_soap_ep1.yaml --skip-publish  # без публикации
+
+scenario:
+  title: "Тайна на кухне"
+  series_name: "Семейка Ягодок"
+  episode_number: 1
+
+  style_prompt: >-
+    3D cartoon render, Pixar animation style, vibrant colors,
+    anthropomorphic fruit and vegetable characters with expressive faces,
+    cute and funny, high quality, detailed, cinematic lighting
+
+  negative_prompt: >-
+    realistic, photo, blurry, low quality, text, watermark, ugly, deformed
+
+  character_descriptions:
+    Папа Клубничка: "A stern but loving strawberry father wearing a tiny hat, cartoon style, anthropomorphic fruit character with arms and legs, expressive face"
+    Мама Клубничка: "A beautiful strawberry mother with eyelashes and lipstick, cartoon style, anthropomorphic fruit character, wearing a small apron"
+    Сын Помидорчик: "A small tomato boy, cute and round, cartoon style, anthropomorphic vegetable child, wearing a baseball cap"
+
+  scenes:
+    - scene_id: scene_01
+      description: "Папа Клубничка приходит домой и видит странную записку на столе"
+      image_prompt: >-
+        Папа Клубничка (strawberry father with hat) enters the kitchen and finds
+        a mysterious note on the table, surprised face, warm kitchen setting,
+        3D Pixar style cartoon
+      voiceover_text: >-
+        Папа Клубничка вернулся с работы и увидел на столе странную записку...
+        Что же там написано?
+      duration: 5.0
+      camera_motion: "slow zoom in"
+      transition: crossfade
+
+    - scene_id: scene_02
+      description: "Мама Клубничка нервничает и прячет телефон за спиной"
+      image_prompt: >-
+        Мама Клубничка (strawberry mother with apron) nervously hiding her phone
+        behind her back, guilty expression, living room with cozy furniture,
+        3D Pixar style cartoon
+      voiceover_text: >-
+        Мама Клубничка почему-то нервничала и прятала телефон...
+        Что она скрывает?!
+      duration: 5.0
+      transition: crossfade
+
+    - scene_id: scene_03
+      description: "Сын Помидорчик находит коробку с подарком под кроватью"
+      image_prompt: >-
+        Сын Помидорчик (small tomato boy with baseball cap) finding a gift box
+        under the bed, excited and curious expression, bedroom scene,
+        3D Pixar style cartoon
+      voiceover_text: >-
+        Маленький Помидорчик нашёл под кроватью загадочную коробку!
+        Он не мог поверить своим глазам!
+      duration: 5.0
+      transition: crossfade
+
+    - scene_id: scene_04
+      description: "Сюрприз! Это был подарок на день рождения Папы!"
+      image_prompt: >-
+        Surprise birthday party scene with Папа Клубничка, Мама Клубничка and
+        Сын Помидорчик, balloons, cake, confetti, everyone is happy and celebrating,
+        3D Pixar style cartoon, colorful and joyful
+      voiceover_text: >-
+        Оказалось, мама и Помидорчик готовили сюрприз на день рождения!
+        С днём рождения, Папа Клубничка! Подпишись, чтобы не пропустить
+        вторую серию!
+      duration: 6.0
+      transition: fade_black
+
+# --- Model settings ---
+
+image_model:
+  model_id: "black-forest-labs/flux-1.1-pro"
+  width: 1080
+  height: 1920
+  num_inference_steps: 25
+  guidance_scale: 3.5
+  output_format: png
+
+video_model:
+  model_id: "minimax/video-01-live"
+  duration: 5
+  fps: 24
+
+tts:
+  engine: edge-tts
+  voice: ru-RU-DmitryNeural
+  rate: "+5%"
+
+subtitles:
+  enabled: true
+  font_size: 52
+  color: white
+  stroke_color: black
+  stroke_width: 3
+  position: bottom
+  max_chars_per_line: 30
+
+music:
+  enabled: false
+  # file: "./assets/background_music.mp3"
+  # volume: 0.12
+
+# --- Publishing targets ---
+
+publish_targets:
+  - platform: telegram
+    enabled: true
+    hashtags:
+      - нейросеть
+      - ии
+      - мультик
+      - сериал
+      - семейкаягодок
+
+  - platform: instagram
+    enabled: true
+    hashtags:
+      - нейросеть
+      - ии
+      - мультик
+      - рек
+      - рекомендации
+      - тренд2026
+      - семейкаягодок
+
+  - platform: youtube
+    enabled: true
+    hashtags:
+      - Shorts
+      - AI
+      - нейросеть
+      - мультик
+
+  - platform: vk
+    enabled: true
+    hashtags:
+      - нейросеть
+      - ии
+      - мультик
+
+  - platform: tiktok
+    enabled: true
+    hashtags:
+      - нейросеть
+      - ии
+      - мультик
+      - тренд
+
+output_dir: "./output"

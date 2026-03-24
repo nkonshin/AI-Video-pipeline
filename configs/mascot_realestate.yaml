@@ -1,0 +1,131 @@
+# ================================================
+# AI Video Pipeline — Business Mascot: Недвижимость
+# ================================================
+# Маскот "Дом Домыч" рассказывает полезные советы по недвижимости
+# Идеально для агентства недвижимости в Перми
+#
+# Запуск:
+#   videopipe run configs/mascot_realestate.yaml
+
+scenario:
+  title: "Как выбрать квартиру мечты"
+  series_name: "Советы от Дом Домыча | Ваше Агентство"
+  episode_number: 1
+
+  style_prompt: >-
+    professional social media content, colorful cartoon mascot,
+    clean design, branding style, engaging, friendly,
+    high quality 3D render, corporate-yet-fun style
+
+  negative_prompt: >-
+    blurry, low quality, text, watermark, deformed, scary, dark
+
+  character_descriptions:
+    Дом Домыч: >-
+      A friendly cartoon house character with a face on the front wall,
+      small arms and legs, wearing a yellow hard hat, cute and professional,
+      warm smile, clean 3D render style
+
+  scenes:
+    - scene_id: scene_01
+      description: "Маскот приветствует зрителей"
+      image_prompt: >-
+        Дом Домыч (friendly cartoon house mascot with face, hard hat)
+        waving hello to the camera, city skyline with apartment buildings
+        in the background, bright sunny day, clean and professional
+        social media content style, 3D render
+      voiceover_text: >-
+        Привет! Я Дом Домыч! Сегодня расскажу, как выбрать квартиру мечты!
+        Смотри до конца — будет полезно!
+      duration: 5.0
+      camera_motion: "zoom in"
+      transition: crossfade
+
+    - scene_id: scene_02
+      description: "Совет 1: Выбор района"
+      image_prompt: >-
+        Дом Домыч (house mascot) pointing at a colorful map of a city,
+        highlighted areas showing schools, parks and shops nearby,
+        infographic style elements, clean and informative,
+        social media content, 3D render
+      voiceover_text: >-
+        Совет первый: обязательно изучите район!
+        Рядом должны быть школы, магазины, парки и транспорт.
+        Это важнее, чем красивые обои!
+      duration: 6.0
+      transition: crossfade
+
+    - scene_id: scene_03
+      description: "Совет 2: Проверка документов"
+      image_prompt: >-
+        Дом Домыч (house mascot) holding a magnifying glass over
+        official documents, serious but friendly expression,
+        checkmarks and shields symbolizing security,
+        clean infographic style, 3D render
+      voiceover_text: >-
+        Совет второй: всегда проверяйте документы!
+        Юридическая чистота квартиры — это ваша безопасность.
+        Не стесняйтесь задавать вопросы!
+      duration: 6.0
+      transition: crossfade
+
+    - scene_id: scene_04
+      description: "Призыв к действию"
+      image_prompt: >-
+        Дом Домыч (house mascot) giving thumbs up, holding a phone
+        with a green checkmark, happy residents in background,
+        "Call us!" vibe, warm and inviting, social media CTA style,
+        3D render, confetti and sparkles
+      voiceover_text: >-
+        Хотите найти квартиру мечты в Перми?
+        Обращайтесь к нам — поможем с выбором!
+        Подпишись, чтобы получать полезные советы каждый день!
+      duration: 6.0
+      transition: fade_black
+
+image_model:
+  model_id: "black-forest-labs/flux-1.1-pro"
+  width: 1080
+  height: 1920
+  num_inference_steps: 25
+  guidance_scale: 3.5
+  output_format: png
+
+video_model:
+  model_id: "minimax/video-01-live"
+  duration: 5
+  fps: 24
+
+tts:
+  engine: edge-tts
+  voice: ru-RU-DmitryNeural
+  rate: "+3%"
+
+subtitles:
+  enabled: true
+  font_size: 48
+  stroke_width: 2
+  position: bottom
+  max_chars_per_line: 32
+
+music:
+  enabled: false
+
+publish_targets:
+  - platform: telegram
+    enabled: true
+    hashtags: [недвижимость, пермь, квартира, совет, полезное]
+  - platform: instagram
+    enabled: true
+    hashtags: [недвижимость, пермь, квартира, рек, рекомендации, полезное, тренд2026]
+  - platform: youtube
+    enabled: true
+    hashtags: [Shorts, недвижимость, квартира, советы]
+  - platform: vk
+    enabled: true
+    hashtags: [недвижимость, пермь, квартира, совет]
+  - platform: tiktok
+    enabled: true
+    hashtags: [недвижимость, квартира, совет, тренд, полезное]
+
+output_dir: "./output"
