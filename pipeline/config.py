@@ -64,7 +64,7 @@ class ImageModelConfig(BaseModel):
 
 class VideoModelConfig(BaseModel):
     """Settings for the video generation model on Replicate."""
-    model_id: str = "minimax/video-01-live"
+    model_id: str = "minimax/hailuo-2.3"
     duration: int = 5  # seconds
     fps: int = 24
     extra_params: dict[str, Any] = Field(default_factory=dict)
@@ -77,7 +77,7 @@ class TTSConfig(BaseModel):
     rate: str = "+0%"
     volume: str = "+0%"
     # Replicate TTS model (if engine == "replicate")
-    replicate_model_id: str = "jaaari/kokoro-82m"
+    replicate_model_id: str = "resemble-ai/chatterbox-multilingual"
     extra_params: dict[str, Any] = Field(default_factory=dict)
 
 

@@ -13,9 +13,9 @@
 **Поддерживаемые платформы:** Instagram Reels, TikTok, YouTube Shorts, ВКонтакте, Telegram
 
 **AI-модели (Replicate.com):**
-- Картинки: FLUX 1.1 Pro, FLUX Dev, SDXL
-- Видео: Minimax Video-01, Kling v1.6, Wan 2.1
-- Озвучка: Edge TTS (бесплатно, русский язык), Kokoro-82M
+- Картинки: FLUX 1.1 Pro, FLUX Dev, FLUX Schnell, SDXL
+- Видео: Hailuo 2.3, Kling v2.5/v3, Wan 2.5, Seedance, Veo 3.1
+- Озвучка: Edge TTS (бесплатно, русский), Chatterbox Multilingual (русский, $0.008/запрос)
 
 ## Три типа контента
 
@@ -157,22 +157,25 @@ python scripts/generate_series.py --type fruit-soap --episodes 5 --skip-publish 
 
 Конвейер отслеживает расходы на Replicate API:
 
-| Модель | ~Цена за 1 запуск |
-|--------|-------------------|
-| FLUX 1.1 Pro (картинка) | ~$0.04 |
-| FLUX Dev (картинка) | ~$0.025 |
-| FLUX Schnell (картинка) | ~$0.003 |
-| Minimax Video-01 (видео) | ~$0.35 |
-| Kling v1.6 Pro (видео) | ~$0.60 |
-| Edge TTS (озвучка) | Бесплатно |
+| Модель | ~Цена за 1 запуск | Примечание |
+|--------|-------------------|------------|
+| FLUX 1.1 Pro (картинка) | ~$0.04 | Лучшее качество |
+| FLUX Dev (картинка) | ~$0.025 | Хороший баланс |
+| FLUX Schnell (картинка) | ~$0.003 | Быстро и дёшево |
+| Hailuo 2.3 (видео) | ~$0.30 | По умолчанию, отличное качество |
+| Hailuo 2.3 Fast (видео) | ~$0.12 | Бюджетный вариант |
+| Kling v2.5 Turbo Pro (видео) | ~$0.50 | Лучшая плавность движений |
+| Wan 2.2 I2V Fast (видео) | ~$0.09 | Самый дешёвый |
+| Edge TTS (озвучка) | Бесплатно | Русский язык |
+| Chatterbox Multilingual (озвучка) | ~$0.008 | Клонирование голоса, русский |
 
 **Пример расчёта для 1 эпизода (4 сцены):**
-- 4 картинки (FLUX Pro): 4 × $0.04 = $0.16
-- 4 видеоклипа (Minimax): 4 × $0.35 = $1.40
-- Озвучка (Edge TTS): бесплатно
-- **Итого: ~$1.56 за эпизод**
 
-С бюджетом $50 можно сделать ~32 эпизода.
+| Конфигурация | Картинки | Видео | Озвучка | Итого | Эпизодов на $50 |
+|---|---|---|---|---|---|
+| Премиум | FLUX Pro ($0.16) | Hailuo 2.3 ($1.20) | Edge TTS ($0) | **~$1.36** | ~36 |
+| Стандарт | FLUX Dev ($0.10) | Hailuo 2.3 Fast ($0.48) | Edge TTS ($0) | **~$0.58** | ~86 |
+| Бюджет | FLUX Schnell ($0.012) | Wan 2.2 Fast ($0.36) | Edge TTS ($0) | **~$0.37** | ~135 |
 
 ## Кастомизация
 
@@ -186,9 +189,24 @@ python scripts/generate_series.py --type fruit-soap --episodes 5 --skip-publish 
 Поменяйте `image_model.model_id` и `video_model.model_id` в YAML:
 ```yaml
 image_model:
-  model_id: "black-forest-labs/flux-dev"  # дешевле
+  model_id: "black-forest-labs/flux-dev"        # дешевле
+  # model_id: "black-forest-labs/flux-schnell"   # самый дешёвый
 video_model:
-  model_id: "wavespeedai/wan-2.1-i2v-480p"  # альтернатива
+  model_id: "minimax/hailuo-2.3-fast"           # быстро и дёшево
+  # model_id: "kwaivgi/kling-v2.5-turbo-pro"    # лучшее движение
+  # model_id: "wan-video/wan-2.2-i2v-fast"      # самый дешёвый
+  # model_id: "bytedance/seedance-1-pro"        # от ByteDance
+  # model_id: "google/veo-3.1"                  # топ качество (дорого)
+```
+
+### Другой движок озвучки
+```yaml
+tts:
+  engine: edge-tts                    # бесплатно (по умолчанию)
+  voice: ru-RU-DmitryNeural
+  # Или через Replicate с клонированием голоса:
+  # engine: replicate
+  # replicate_model_id: "resemble-ai/chatterbox-multilingual"
 ```
 
 ### Другой голос

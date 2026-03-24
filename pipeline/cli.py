@@ -120,7 +120,7 @@ def generate_scenario(
     config_data = {
         "scenario": scenario.model_dump(),
         "image_model": {"model_id": "black-forest-labs/flux-1.1-pro"},
-        "video_model": {"model_id": "minimax/video-01-live"},
+        "video_model": {"model_id": "minimax/hailuo-2.3"},
         "tts": {"engine": "edge-tts", "voice": "ru-RU-DmitryNeural"},
         "subtitles": {"enabled": True},
         "publish_targets": [
@@ -199,7 +199,7 @@ def batch(
         config_data = {
             "scenario": scenario.model_dump(),
             "image_model": {"model_id": "black-forest-labs/flux-1.1-pro"},
-            "video_model": {"model_id": "minimax/video-01-live"},
+            "video_model": {"model_id": "minimax/hailuo-2.3"},
             "tts": {"engine": "edge-tts", "voice": "ru-RU-DmitryNeural"},
             "subtitles": {"enabled": True},
             "publish_targets": [

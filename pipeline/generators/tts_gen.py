@@ -68,9 +68,16 @@ class TTSGenerator:
         model_id = self.config.replicate_model_id
         input_params: dict[str, Any] = {
             "text": text,
-            "voice": self.config.voice,
             **self.config.extra_params,
         }
+
+        # Model-specific parameter mapping
+        if "chatterbox-multilingual" in model_id:
+            input_params["language"] = "ru"
+        elif "minimax/speech" in model_id:
+            input_params["voice_id"] = self.config.voice
+        else:
+            input_params["voice"] = self.config.voice
 
         log.info(f"[TTS/replicate] Generating with {model_id}: {text[:60]}...")
         output = self.replicate_client.run(model_id, input_params)

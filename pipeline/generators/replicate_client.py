@@ -17,16 +17,37 @@ log = get_logger(__name__)
 
 # Approximate costs per model (USD) — used for budget tracking only
 MODEL_COSTS: dict[str, float] = {
+    # Image generation
     "black-forest-labs/flux-1.1-pro": 0.04,
+    "black-forest-labs/flux-1.1-pro-ultra": 0.04,
     "black-forest-labs/flux-dev": 0.025,
     "black-forest-labs/flux-schnell": 0.003,
+    "black-forest-labs/flux-kontext-pro": 0.04,
     "stability-ai/sdxl": 0.01,
+    # Video generation (image-to-video)
+    "minimax/hailuo-2.3": 0.30,
+    "minimax/hailuo-2.3-fast": 0.12,
     "minimax/video-01-live": 0.35,
     "minimax/video-01": 0.50,
-    "wavespeedai/wan-2.1-i2v-480p": 0.20,
+    "kwaivgi/kling-v2.5-turbo-pro": 0.50,
+    "kwaivgi/kling-v2.1": 0.50,
+    "kwaivgi/kling-v3-video": 0.75,
     "kwaivgi/kling-v1.6-pro": 0.60,
+    "wan-video/wan-2.5-i2v": 0.25,
+    "wan-video/wan-2.5-i2v-fast": 0.15,
+    "wan-video/wan-2.2-i2v-fast": 0.09,
+    "wavespeedai/wan-2.1-i2v-480p": 0.20,
+    "bytedance/seedance-1-pro": 0.50,
+    "bytedance/seedance-1-pro-fast": 0.25,
+    "google/veo-2": 3.00,
+    "google/veo-3.1": 6.00,
+    "google/veo-3.1-fast": 3.20,
+    # TTS
+    "resemble-ai/chatterbox-multilingual": 0.0084,
+    "minimax/speech-2.8-turbo": 0.03,
+    "minimax/speech-2.8-hd": 0.05,
+    "jaaari/kokoro-82m": 0.0002,
     "lucataco/xtts-v2": 0.05,
-    "jaaari/kokoro-82m": 0.02,
 }
 
 

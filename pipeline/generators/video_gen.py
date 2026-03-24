@@ -52,22 +52,32 @@ class VideoGenerator:
 
         params: dict[str, Any] = {**self.config.extra_params}
 
-        if "minimax" in model:
+        if "minimax" in model or "hailuo" in model:
             params.update({
                 "prompt": scene.description or scene.image_prompt,
                 "first_frame_image": image_uri,
             })
-        elif "wan" in model:
+        elif "wan-video" in model or "wan-2" in model:
             params.update({
                 "image": image_uri,
                 "prompt": scene.description or scene.image_prompt,
-                "max_frames": self.config.fps * self.config.duration,
             })
         elif "kling" in model:
             params.update({
                 "prompt": scene.description or scene.image_prompt,
                 "start_image": image_uri,
                 "duration": str(self.config.duration),
+            })
+        elif "seedance" in model:
+            params.update({
+                "prompt": scene.description or scene.image_prompt,
+                "image": image_uri,
+                "duration": self.config.duration,
+            })
+        elif "veo" in model:
+            params.update({
+                "prompt": scene.description or scene.image_prompt,
+                "image": image_uri,
             })
         else:
             # Generic image-to-video
@@ -107,8 +117,8 @@ class VideoGenerator:
 
 def _needs_data_uri(model_id: str) -> bool:
     """Some models expect a data URI instead of a file object."""
-    # Minimax models expect URLs or data URIs
-    return "minimax" in model_id
+    # Minimax/Hailuo models expect URLs or data URIs
+    return "minimax" in model_id or "hailuo" in model_id
 
 
 def _to_data_uri(path: Path) -> str:

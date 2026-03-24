@@ -87,7 +87,7 @@ image_model:
   output_format: png
 
 video_model:
-  model_id: "minimax/video-01-live"
+  model_id: "minimax/hailuo-2.3"
   duration: 5
   fps: 24
 

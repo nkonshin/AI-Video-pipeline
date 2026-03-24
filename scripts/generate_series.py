@@ -124,7 +124,7 @@ def main():
     parser.add_argument("--company", default="")
     parser.add_argument("--output-dir", default="./scenarios")
     parser.add_argument("--image-model", default="black-forest-labs/flux-1.1-pro")
-    parser.add_argument("--video-model", default="minimax/video-01-live")
+    parser.add_argument("--video-model", default="minimax/hailuo-2.3")
     parser.add_argument("--voice", default="ru-RU-DmitryNeural")
     parser.add_argument("--skip-publish", action="store_true")
     parser.add_argument("--dry-run", action="store_true", help="Only generate YAMLs, don't run pipeline")
