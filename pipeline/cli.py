@@ -22,7 +22,7 @@ from pipeline.utils.logger import get_logger
 
 app = typer.Typer(
     name="videopipe",
-    help="🎬 AI Video Pipeline — automated video production with multi-platform publishing",
+    help="\ud83c\udfac AI Video Pipeline \u2014 automated video production with multi-platform publishing",
     no_args_is_help=True,
 )
 console = Console()
@@ -46,7 +46,7 @@ def run(
     audio_dir: Optional[Path] = typer.Option(None, "--audio-dir", help="Pre-generated audio dir"),
 ):
     """Run the full video production pipeline from a YAML config."""
-    console.print(Panel("🎬 AI Video Pipeline", style="bold blue"))
+    console.print(Panel("\ud83c\udfac AI Video Pipeline", style="bold blue"))
 
     pipeline_config = load_pipeline_config(config)
     env = load_env()
@@ -81,9 +81,9 @@ def generate_scenario(
     output: Path = typer.Option("scenario.yaml", "-o", "--output", help="Output YAML file"),
     series_name: str = typer.Option("", "--series", help="Series name"),
     episode: int = typer.Option(1, "--episode", "-e", help="Episode number"),
-    character: str = typer.Option("Шрек", "--character", "-c", help="Character name (for remix)"),
+    character: str = typer.Option("\u0428\u0440\u0435\u043a", "--character", "-c", help="Character name (for remix)"),
     context: int = typer.Option(0, "--context", help="Context index (for remix)"),
-    business: str = typer.Option("недвижимость", "--business", "-b", help="Business type (for mascot)"),
+    business: str = typer.Option("\u043d\u0435\u0434\u0432\u0438\u0436\u0438\u043c\u043e\u0441\u0442\u044c", "--business", "-b", help="Business type (for mascot)"),
     company: str = typer.Option("", "--company", help="Company name (for mascot)"),
     topic: int = typer.Option(0, "--topic", help="Topic index (for mascot)"),
 ):
@@ -93,7 +93,7 @@ def generate_scenario(
     if type == "fruit-soap":
         gen = FruitSoapOperaGenerator()
         scenario = gen.generate(
-            series_name=series_name or "Семейка Ягодок",
+            series_name=series_name or "\u0421\u0435\u043c\u0435\u0439\u043a\u0430 \u042f\u0433\u043e\u0434\u043e\u043a",
             episode_number=episode,
         )
     elif type == "character-remix":
@@ -124,11 +124,11 @@ def generate_scenario(
         "tts": {"engine": "edge-tts", "voice": "ru-RU-DmitryNeural"},
         "subtitles": {"enabled": True},
         "publish_targets": [
-            {"platform": "telegram", "enabled": True, "hashtags": ["нейросеть", "ии", "сериал"]},
-            {"platform": "instagram", "enabled": True, "hashtags": ["нейросеть", "ии", "рек"]},
-            {"platform": "youtube", "enabled": True, "hashtags": ["Shorts", "AI", "нейросеть"]},
-            {"platform": "vk", "enabled": True, "hashtags": ["нейросеть", "ии"]},
-            {"platform": "tiktok", "enabled": True, "hashtags": ["нейросеть", "ии", "тренд"]},
+            {"platform": "telegram", "enabled": True, "hashtags": ["\u043d\u0435\u0439\u0440\u043e\u0441\u0435\u0442\u044c", "\u0438\u0438", "\u0441\u0435\u0440\u0438\u0430\u043b"]},
+            {"platform": "instagram", "enabled": True, "hashtags": ["\u043d\u0435\u0439\u0440\u043e\u0441\u0435\u0442\u044c", "\u0438\u0438", "\u0440\u0435\u043a"]},
+            {"platform": "youtube", "enabled": True, "hashtags": ["Shorts", "AI", "\u043d\u0435\u0439\u0440\u043e\u0441\u0435\u0442\u044c"]},
+            {"platform": "vk", "enabled": True, "hashtags": ["\u043d\u0435\u0439\u0440\u043e\u0441\u0435\u0442\u044c", "\u0438\u0438"]},
+            {"platform": "tiktok", "enabled": True, "hashtags": ["\u043d\u0435\u0439\u0440\u043e\u0441\u0435\u0442\u044c", "\u0438\u0438", "\u0442\u0440\u0435\u043d\u0434"]},
         ],
         "output_dir": "./output",
     }
@@ -156,8 +156,8 @@ def batch(
     count: int = typer.Option(5, "-n", "--count", help="Number of episodes to generate"),
     output_dir: Path = typer.Option("./scenarios", "-o", "--output-dir", help="Output directory"),
     series_name: str = typer.Option("", "--series", help="Series name"),
-    character: str = typer.Option("Шрек", "--character", "-c", help="Character (for remix)"),
-    business: str = typer.Option("недвижимость", "--business", "-b", help="Business (for mascot)"),
+    character: str = typer.Option("\u0428\u0440\u0435\u043a", "--character", "-c", help="Character (for remix)"),
+    business: str = typer.Option("\u043d\u0435\u0434\u0432\u0438\u0436\u0438\u043c\u043e\u0441\u0442\u044c", "--business", "-b", help="Business (for mascot)"),
     company: str = typer.Option("", "--company", help="Company name (for mascot)"),
 ):
     """Generate multiple episode scenario files at once."""
@@ -172,7 +172,7 @@ def batch(
         if type == "fruit-soap":
             gen = FruitSoapOperaGenerator()
             scenario = gen.generate(
-                series_name=series_name or "Семейка Ягодок",
+                series_name=series_name or "\u0421\u0435\u043c\u0435\u0439\u043a\u0430 \u042f\u0433\u043e\u0434\u043e\u043a",
                 episode_number=ep,
             )
         elif type == "character-remix":
@@ -216,7 +216,7 @@ def batch(
         with open(fname, "w", encoding="utf-8") as f:
             yaml.dump(config_data, f, allow_unicode=True, default_flow_style=False, sort_keys=False)
 
-        console.print(f"  [green]✓[/green] Episode {ep}: {scenario.title} -> {fname}")
+        console.print(f"  [green]\u2713[/green] Episode {ep}: {scenario.title} -> {fname}")
 
     console.print(f"\n[bold green]Done! Generated {count} scenarios in {output_dir}[/bold green]")
     console.print(f"Run them with: [bold]for f in {output_dir}/*.yaml; do videopipe run $f; done[/bold]")
@@ -236,29 +236,46 @@ def info():
 
     table.add_row(
         "fruit-soap",
-        "AI мультсериал с фруктами/овощами (тренд Инстаграм)",
-        f"{len(FruitSoapOperaGenerator.PLOTLINES)} сюжетов",
+        "AI \u043c\u0443\u043b\u044c\u0442\u0441\u0435\u0440\u0438\u0430\u043b \u0441 \u0444\u0440\u0443\u043a\u0442\u0430\u043c\u0438/\u043e\u0432\u043e\u0449\u0430\u043c\u0438 (\u0442\u0440\u0435\u043d\u0434 \u0418\u043d\u0441\u0442\u0430\u0433\u0440\u0430\u043c)",
+        f"{len(FruitSoapOperaGenerator.PLOTLINES)} \u0441\u044e\u0436\u0435\u0442\u043e\u0432",
     )
     table.add_row(
         "character-remix",
-        "Известные персонажи в необычных контекстах",
-        f"Персонажи: {', '.join(CharacterRemixGenerator.CHARACTERS.keys())}",
+        "\u0418\u0437\u0432\u0435\u0441\u0442\u043d\u044b\u0435 \u043f\u0435\u0440\u0441\u043e\u043d\u0430\u0436\u0438 \u0432 \u043d\u0435\u043e\u0431\u044b\u0447\u043d\u044b\u0445 \u043a\u043e\u043d\u0442\u0435\u043a\u0441\u0442\u0430\u0445",
+        f"\u041f\u0435\u0440\u0441\u043e\u043d\u0430\u0436\u0438: {', '.join(CharacterRemixGenerator.CHARACTERS.keys())}",
     )
     table.add_row(
         "mascot",
-        "Маскот для бизнеса — брендированный контент",
-        f"Бизнесы: {', '.join(MascotContentGenerator.available_businesses())}",
+        "\u041c\u0430\u0441\u043a\u043e\u0442 \u0434\u043b\u044f \u0431\u0438\u0437\u043d\u0435\u0441\u0430 \u2014 \u0431\u0440\u0435\u043d\u0434\u0438\u0440\u043e\u0432\u0430\u043d\u043d\u044b\u0439 \u043a\u043e\u043d\u0442\u0435\u043d\u0442",
+        f"\u0411\u0438\u0437\u043d\u0435\u0441\u044b: {', '.join(MascotContentGenerator.available_businesses())}",
     )
 
     console.print(table)
 
-    console.print("\n[bold]Примеры команд:[/bold]")
+    console.print("\n[bold]\u041f\u0440\u0438\u043c\u0435\u0440\u044b \u043a\u043e\u043c\u0430\u043d\u0434:[/bold]")
     console.print("  videopipe generate-scenario fruit-soap -o ep1.yaml")
-    console.print("  videopipe generate-scenario character-remix -c Шрек --context 0 -o shrek.yaml")
-    console.print("  videopipe generate-scenario mascot -b недвижимость --company 'Дом Мечты' -o mascot.yaml")
+    console.print("  videopipe generate-scenario character-remix -c \u0428\u0440\u0435\u043a --context 0 -o shrek.yaml")
+    console.print("  videopipe generate-scenario mascot -b \u043d\u0435\u0434\u0432\u0438\u0436\u0438\u043c\u043e\u0441\u0442\u044c --company '\u0414\u043e\u043c \u041c\u0435\u0447\u0442\u044b' -o mascot.yaml")
     console.print("  videopipe batch fruit-soap -n 10 -o ./episodes/")
     console.print("  videopipe run ep1.yaml")
     console.print("  videopipe run ep1.yaml --skip-publish  # generate video without publishing")
+    console.print("  videopipe web                           # launch web interface")
+
+
+# ---------------------------------------------------------------------------
+# Web server
+# ---------------------------------------------------------------------------
+
+@app.command()
+def web(
+    host: str = typer.Option("0.0.0.0", help="Host to bind"),
+    port: int = typer.Option(8000, help="Port to listen on"),
+):
+    """Launch the web interface."""
+    console.print(f"[bold green]Starting VideoFactory web UI on http://{host}:{port}[/bold green]")
+    import uvicorn
+    from pipeline.web.app import app as web_app
+    uvicorn.run(web_app, host=host, port=port)
 
 
 if __name__ == "__main__":
