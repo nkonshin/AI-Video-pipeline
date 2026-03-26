@@ -1,5 +1,7 @@
 """Videos API tests."""
 
+from unittest.mock import patch
+
 import pytest
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
@@ -95,3 +97,17 @@ async def test_delete_video(client):
     assert response.status_code == 204
     response = await client.get(f"/api/videos/{video_id}")
     assert response.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_start_generation_endpoint(client):
+    create_resp = await client.post("/api/videos", json={
+        "title": "V", "content_type": "custom",
+        "scenario_config": {"scenario": {"title": "T", "series_name": "S", "episode_number": 1,
+            "scenes": [{"scene_id": "s1", "description": "d", "image_prompt": "p", "voiceover_text": "t"}]}},
+    })
+    video_id = create_resp.json()["id"]
+    with patch("backend.routers.videos.run_generation_task"):
+        response = await client.post(f"/api/videos/{video_id}/generate")
+        assert response.status_code == 202
+        assert response.json()["status"] == "running"
