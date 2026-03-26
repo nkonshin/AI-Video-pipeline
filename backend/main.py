@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.database import init_db
+from backend.routers.scenarios import router as scenarios_router
 
 
 @asynccontextmanager
@@ -28,6 +29,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+app.include_router(scenarios_router)
 
 
 @app.get("/api/health")
