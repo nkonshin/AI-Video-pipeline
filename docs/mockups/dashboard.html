@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Pipeline — Dashboard</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a0f; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; color: #e5e7eb; -webkit-font-smoothing: antialiased; }
+
+  .app { display: flex; height: 100vh; }
+
+  /* Sidebar */
+  .sidebar { width: 240px; background: rgba(255,255,255,0.015); border-right: 1px solid rgba(255,255,255,0.06); padding: 24px 14px; display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+  .sidebar-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; padding: 0 10px; }
+  .sidebar-logo-icon { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #6366f1, #8b5cf6); display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; }
+  .sidebar-logo-text { color: #f0f0f0; font-size: 15px; font-weight: 600; }
+  .sidebar-item { padding: 9px 14px; border-radius: 8px; font-size: 13.5px; color: #9ca3af; cursor: pointer; transition: all 0.15s; }
+  .sidebar-item:hover { background: rgba(255,255,255,0.03); color: #d1d5db; }
+  .sidebar-item.active { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.15); color: #a5b4fc; font-weight: 500; }
+  .sidebar-bottom { margin-top: auto; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.04); }
+
+  /* Main */
+  .main { flex: 1; padding: 32px 36px; overflow-y: auto; }
+  .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+  .main-title { font-size: 22px; font-weight: 600; }
+  .main-subtitle { color: #6b7280; font-size: 13px; margin-top: 3px; }
+  .btn-primary { padding: 9px 20px; border-radius: 8px; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; font-size: 13px; font-weight: 500; border: none; cursor: pointer; box-shadow: 0 0 20px rgba(99,102,241,0.2); }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+  .stat-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 20px; position: relative; overflow: hidden; }
+  .stat-card::before { content: ''; position: absolute; top: -30px; right: -30px; width: 80px; height: 80px; border-radius: 50%; }
+  .stat-card:nth-child(1)::before { background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%); }
+  .stat-card:nth-child(2)::before { background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%); }
+  .stat-card:nth-child(3)::before { background: radial-gradient(circle, rgba(244,114,182,0.12) 0%, transparent 70%); }
+  .stat-card:nth-child(4)::before { background: radial-gradient(circle, rgba(251,191,36,0.12) 0%, transparent 70%); }
+  .stat-label { color: #6b7280; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-value { font-size: 32px; font-weight: 600; margin-top: 6px; }
+  .stat-card:nth-child(1) .stat-value { color: #a5b4fc; }
+  .stat-card:nth-child(2) .stat-value { color: #6ee7b7; }
+  .stat-card:nth-child(3) .stat-value { color: #f9a8d4; }
+  .stat-card:nth-child(4) .stat-value { color: #fbbf24; }
+  .stat-sub { color: #6b7280; font-size: 11px; margin-top: 5px; }
+  .stat-sub.green { color: #4ade80; }
+
+  /* Section card */
+  .section-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 22px; margin-bottom: 20px; }
+  .section-title { font-size: 15px; font-weight: 500; margin-bottom: 16px; }
+  .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .section-link { color: #6366f1; font-size: 12px; cursor: pointer; }
+
+  /* Active Jobs */
+  .job { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 12px; padding: 16px; margin-bottom: 10px; }
+  .job-header { display: flex; justify-content: space-between; align-items: center; }
+  .job-info { display: flex; align-items: center; gap: 10px; }
+  .job-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .job-dot.indigo { background: #6366f1; box-shadow: 0 0 8px rgba(99,102,241,0.5); }
+  .job-dot.amber { background: #f59e0b; box-shadow: 0 0 8px rgba(245,158,11,0.5); }
+  .job-name { color: #d1d5db; font-size: 13px; }
+  .job-badge { color: #6b7280; font-size: 11px; padding: 2px 8px; background: rgba(255,255,255,0.04); border-radius: 4px; }
+  .job-stage { font-size: 12px; font-weight: 500; }
+  .job-stage.indigo { color: #a5b4fc; }
+  .job-stage.amber { color: #fbbf24; }
+  .progress-bar { background: rgba(255,255,255,0.04); border-radius: 3px; height: 4px; margin-top: 12px; }
+  .progress-fill { height: 100%; border-radius: 3px; }
+  .progress-fill.indigo { background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa); box-shadow: 0 0 8px rgba(99,102,241,0.3); }
+  .progress-fill.amber { background: linear-gradient(90deg, #f59e0b, #fbbf24); box-shadow: 0 0 8px rgba(245,158,11,0.3); }
+  .progress-row { display: flex; align-items: center; gap: 10px; }
+  .progress-pct { color: #6b7280; font-size: 11px; min-width: 30px; text-align: right; }
+
+  /* Recent Videos */
+  .videos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .video-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 12px; overflow: hidden; cursor: pointer; transition: border-color 0.2s; }
+  .video-card:hover { border-color: rgba(99,102,241,0.2); }
+  .video-thumb { height: 120px; display: flex; align-items: center; justify-content: center; position: relative; }
+  .video-thumb:nth-child(1) { background: linear-gradient(135deg, #1a1a2e, #2d1b4e); }
+  .video-play { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; }
+  .video-body { padding: 12px 14px; }
+  .video-name { color: #d1d5db; font-size: 13px; font-weight: 500; }
+  .video-meta { color: #6b7280; font-size: 11px; margin-top: 3px; }
+  .video-badges { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+  .badge { font-size: 10px; padding: 2px 8px; border-radius: 4px; }
+  .badge.green { background: rgba(16,185,129,0.1); color: #6ee7b7; }
+  .badge.indigo { background: rgba(99,102,241,0.1); color: #a5b4fc; }
+  .badge.amber { background: rgba(251,191,36,0.1); color: #fbbf24; }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">▶</div>
+      <div class="sidebar-logo-text">Video Pipeline</div>
+    </div>
+    <div class="sidebar-item active">Dashboard</div>
+    <div class="sidebar-item">Create Video</div>
+    <div class="sidebar-item">My Videos</div>
+    <div class="sidebar-item">Scenarios</div>
+    <div class="sidebar-item">Publishing</div>
+    <div class="sidebar-bottom">
+      <div class="sidebar-item">Settings</div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <div class="main-header">
+      <div>
+        <div class="main-title">Dashboard</div>
+        <div class="main-subtitle">Overview of your video pipeline</div>
+      </div>
+      <button class="btn-primary">+ New Video</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Videos</div>
+        <div class="stat-value">24</div>
+        <div class="stat-sub green">+3 this week</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Budget Spent</div>
+        <div class="stat-value">$18.40</div>
+        <div class="stat-sub">of $50.00 limit</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Published</div>
+        <div class="stat-value">18</div>
+        <div class="stat-sub">across 4 platforms</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active Jobs</div>
+        <div class="stat-value">2</div>
+        <div class="stat-sub">generating now</div>
+      </div>
+    </div>
+
+    <!-- Active Generations -->
+    <div class="section-card">
+      <div class="section-title">Active Generations</div>
+      <div class="job">
+        <div class="job-header">
+          <div class="job-info">
+            <div class="job-dot indigo"></div>
+            <span class="job-name">Семейка Ягодок — Ep. 7</span>
+            <span class="job-badge">fruit-soap</span>
+          </div>
+          <span class="job-stage indigo">Video Generation — 3/4 scenes</span>
+        </div>
+        <div class="progress-row">
+          <div class="progress-bar" style="flex:1"><div class="progress-fill indigo" style="width:62%"></div></div>
+          <span class="progress-pct">62%</span>
+        </div>
+      </div>
+      <div class="job">
+        <div class="job-header">
+          <div class="job-info">
+            <div class="job-dot amber"></div>
+            <span class="job-name">Шрек записывает рэп-альбом</span>
+            <span class="job-badge">character-remix</span>
+          </div>
+          <span class="job-stage amber">TTS Generation</span>
+        </div>
+        <div class="progress-row">
+          <div class="progress-bar" style="flex:1"><div class="progress-fill amber" style="width:45%"></div></div>
+          <span class="progress-pct">45%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Videos -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title" style="margin-bottom:0">Recent Videos</span>
+        <span class="section-link">View all →</span>
+      </div>
+      <div class="videos-grid">
+        <div class="video-card">
+          <div class="video-thumb" style="background: linear-gradient(135deg, #1a1a2e, #2d1b4e);">
+            <div class="video-play">▶</div>
+          </div>
+          <div class="video-body">
+            <div class="video-name">Ягодки Ep.6 — Тайна на кухне</div>
+            <div class="video-meta">2 hours ago · $1.36</div>
+            <div class="video-badges">
+              <span class="badge green">Published</span>
+              <span class="badge indigo">TG</span>
+              <span class="badge indigo">IG</span>
+            </div>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb" style="background: linear-gradient(135deg, #1a2e1a, #1b4e2d);">
+            <div class="video-play">▶</div>
+          </div>
+          <div class="video-body">
+            <div class="video-name">Шрек — рэп-альбом</div>
+            <div class="video-meta">5 hours ago · $0.58</div>
+            <div class="video-badges">
+              <span class="badge green">Published</span>
+              <span class="badge indigo">YT</span>
+            </div>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb" style="background: linear-gradient(135deg, #2e1a1a, #4e1b1b);">
+            <div class="video-play">▶</div>
+          </div>
+          <div class="video-body">
+            <div class="video-name">Маскот — кофейня</div>
+            <div class="video-meta">Yesterday · $0.37</div>
+            <div class="video-badges">
+              <span class="badge amber">Draft</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
