@@ -37,6 +37,7 @@ export default function ActiveJobs() {
   const { data } = useQuery<VideoList>({
     queryKey: ['videos'],
     queryFn: () => api.getVideos(),
+    refetchInterval: 5000,
   });
 
   const activeVideos = (data?.videos ?? []).filter(
