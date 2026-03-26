@@ -1,15 +1,49 @@
 """Videos API router."""
 
+import asyncio
+from datetime import datetime, timezone
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+from starlette.responses import JSONResponse
 
 from backend.database import get_session
-from backend.models import Video
-from backend.schemas import VideoCreate, VideoList, VideoResponse
+from backend.models import Publication, Video
+from backend.schemas import PublishRequest, VideoCreate, VideoList, VideoResponse
+from backend.services.video_service import run_pipeline_with_progress
 
 router = APIRouter(prefix="/api/videos", tags=["videos"])
+
+
+async def run_generation_task(video_id: str, scenario_config: dict, session_factory):
+    """Background task that runs the pipeline and updates the DB."""
+    async with session_factory() as session:
+        result_q = await session.execute(select(Video).where(Video.id == video_id))
+        video = result_q.scalar_one_or_none()
+        if not video:
+            return
+
+        video.status = "running"
+        await session.commit()
+
+        try:
+            result = await run_pipeline_with_progress(
+                job_id=video_id,
+                config_dict=scenario_config,
+            )
+            video.status = "completed"
+            video.completed_at = datetime.now(timezone.utc)
+            video.output_path = result.get("final_video")
+            images = result.get("images", {})
+            if images:
+                video.thumbnail_path = next(iter(images.values()), None)
+        except Exception as e:
+            video.status = "failed"
+            video.error_message = str(e)
+
+        await session.commit()
 
 
 @router.get("", response_model=VideoList)
@@ -77,3 +111,48 @@ async def delete_video(video_id: str, session: AsyncSession = Depends(get_sessio
         raise HTTPException(status_code=404, detail="Video not found")
     await session.delete(video)
     await session.commit()
+
+
+@router.post("/{video_id}/generate", status_code=202)
+async def start_generation(video_id: str, session: AsyncSession = Depends(get_session)):
+    result = await session.execute(select(Video).where(Video.id == video_id))
+    video = result.scalar_one_or_none()
+    if not video:
+        raise HTTPException(status_code=404, detail="Video not found")
+    if video.status == "running":
+        raise HTTPException(status_code=409, detail="Generation already in progress")
+
+    video.status = "running"
+    await session.commit()
+
+    from backend.database import async_session
+    asyncio.create_task(run_generation_task(video_id, video.scenario_config, async_session))
+
+    return {"id": video_id, "status": "running"}
+
+
+@router.post("/{video_id}/publish")
+async def publish_video(video_id: str, body: PublishRequest, session: AsyncSession = Depends(get_session)):
+    result = await session.execute(select(Video).where(Video.id == video_id))
+    video = result.scalar_one_or_none()
+    if not video:
+        raise HTTPException(status_code=404, detail="Video not found")
+    if not video.output_path:
+        raise HTTPException(status_code=400, detail="Video has no output file")
+
+    results = []
+    for platform in body.platforms:
+        pub = Publication(video_id=video_id, platform=platform, status="failed", error_message="Publishing not yet connected")
+        session.add(pub)
+        results.append({"platform": platform, "status": pub.status})
+
+    await session.commit()
+    has_success = any(r["status"] == "success" for r in results)
+    has_failure = any(r["status"] == "failed" for r in results)
+    if has_success and has_failure:
+        status_code = 207
+    elif has_success:
+        status_code = 200
+    else:
+        status_code = 207
+    return JSONResponse(content=results, status_code=status_code)

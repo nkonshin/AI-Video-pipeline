@@ -1,10 +1,22 @@
+# Database
+data/
+*.db
+
+# Superpowers
+.superpowers/
+
+# Claude
+.claude/
+
 # Python
 __pycache__/
 *.py[cod]
+*.pyc
 *.egg-info/
 dist/
 build/
 .eggs/
+.pytest_cache/
 
 # Environment
 .env
@@ -31,4 +43,3 @@ token.json
 # OS
 .DS_Store
 Thumbs.db
-.claude/

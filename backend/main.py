@@ -1,9 +1,11 @@
 """FastAPI application for AI Video Pipeline."""
 
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from backend.database import init_db
 from backend.routers.settings import router as settings_router
@@ -40,6 +42,10 @@ app.include_router(scenarios_router)
 app.include_router(videos_router)
 app.include_router(publishing_router)
 app.include_router(ws_router)
+
+_output_dir = Path(__file__).resolve().parent.parent / "output"
+_output_dir.mkdir(parents=True, exist_ok=True)
+app.mount("/media", StaticFiles(directory=str(_output_dir)), name="media")
 
 
 @app.get("/api/health")
