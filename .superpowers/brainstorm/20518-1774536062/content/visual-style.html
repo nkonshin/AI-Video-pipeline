@@ -1,0 +1,133 @@
+<h2>Визуальный стиль интерфейса</h2>
+<p class="subtitle">Какое направление дизайна ближе для AI Video Pipeline?</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%); padding: 24px; border-radius: 8px; min-height: 200px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+          <div style="width: 8px; height: 8px; border-radius: 50%; background: #6c5ce7;"></div>
+          <span style="color: #e0e0e0; font-size: 13px; font-weight: 500; letter-spacing: 0.5px;">AI VIDEO PIPELINE</span>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 8px;">
+          <div style="flex: 1; background: rgba(108,92,231,0.08); border: 1px solid rgba(108,92,231,0.15); border-radius: 12px; padding: 16px; text-align: center;">
+            <div style="color: #6c5ce7; font-size: 22px; font-weight: 600;">12</div>
+            <div style="color: #888; font-size: 11px; margin-top: 4px;">Videos</div>
+          </div>
+          <div style="flex: 1; background: rgba(0,206,209,0.06); border: 1px solid rgba(0,206,209,0.12); border-radius: 12px; padding: 16px; text-align: center;">
+            <div style="color: #00ced1; font-size: 22px; font-weight: 600;">$4.20</div>
+            <div style="color: #888; font-size: 11px; margin-top: 4px;">Spent</div>
+          </div>
+          <div style="flex: 1; background: rgba(253,121,168,0.06); border: 1px solid rgba(253,121,168,0.12); border-radius: 12px; padding: 16px; text-align: center;">
+            <div style="color: #fd79a8; font-size: 22px; font-weight: 600;">3</div>
+            <div style="color: #888; font-size: 11px; margin-top: 4px;">Running</div>
+          </div>
+        </div>
+        <div style="background: rgba(255,255,255,0.03); border-radius: 8px; padding: 12px; margin-top: 4px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="color: #ccc; font-size: 12px;">Ep. 5 — Семейка Ягодок</span>
+            <span style="color: #6c5ce7; font-size: 11px; background: rgba(108,92,231,0.15); padding: 2px 8px; border-radius: 4px;">Rendering</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.06); border-radius: 4px; height: 4px; margin-top: 8px;">
+            <div style="background: linear-gradient(90deg, #6c5ce7, #a29bfe); width: 65%; height: 100%; border-radius: 4px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. Dark Minimal</h3>
+      <p>Тёмная тема, неоновые акценты, стеклянные карточки. Как Linear, Vercel Dashboard. Чистый и профессиональный.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%); padding: 24px; border-radius: 8px; min-height: 200px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid #e8e8e8;">
+          <div style="width: 24px; height: 24px; border-radius: 6px; background: linear-gradient(135deg, #ff6b6b, #ffa502); display: flex; align-items: center; justify-content: center;">
+            <span style="color: white; font-size: 12px; font-weight: 700;">V</span>
+          </div>
+          <span style="color: #333; font-size: 13px; font-weight: 600;">Video Pipeline</span>
+          <span style="margin-left: auto; color: #999; font-size: 12px;">Dashboard</span>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 8px;">
+          <div style="flex: 1; background: white; border: 1px solid #eee; border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+            <div style="color: #333; font-size: 22px; font-weight: 600;">12</div>
+            <div style="color: #999; font-size: 11px; margin-top: 4px;">Videos</div>
+          </div>
+          <div style="flex: 1; background: white; border: 1px solid #eee; border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+            <div style="color: #333; font-size: 22px; font-weight: 600;">$4.20</div>
+            <div style="color: #999; font-size: 11px; margin-top: 4px;">Spent</div>
+          </div>
+          <div style="flex: 1; background: white; border: 1px solid #eee; border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+            <div style="color: #333; font-size: 22px; font-weight: 600;">3</div>
+            <div style="color: #999; font-size: 11px; margin-top: 4px;">Running</div>
+          </div>
+        </div>
+        <div style="background: white; border: 1px solid #eee; border-radius: 8px; padding: 12px; margin-top: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="color: #555; font-size: 12px;">Ep. 5 — Семейка Ягодок</span>
+            <span style="color: #ff6b6b; font-size: 11px; background: #fff0f0; padding: 2px 8px; border-radius: 4px;">Rendering</span>
+          </div>
+          <div style="background: #f0f0f0; border-radius: 4px; height: 4px; margin-top: 8px;">
+            <div style="background: linear-gradient(90deg, #ff6b6b, #ffa502); width: 65%; height: 100%; border-radius: 4px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. Light Clean</h3>
+      <p>Светлая тема, мягкие тени, тёплые акценты. Как Notion, Stripe Dashboard. Приветливый и аккуратный.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%); padding: 24px; border-radius: 8px; min-height: 200px; display: flex; flex-direction: column; gap: 12px; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);"></div>
+        <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+          <div style="width: 24px; height: 24px; border-radius: 6px; background: linear-gradient(135deg, #6366f1, #8b5cf6); display: flex; align-items: center; justify-content: center;">
+            <span style="color: white; font-size: 11px;">▶</span>
+          </div>
+          <span style="color: #f0f0f0; font-size: 13px; font-weight: 500;">videopipe</span>
+          <div style="margin-left: auto; display: flex; gap: 6px;">
+            <div style="width: 28px; height: 28px; border-radius: 6px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);"></div>
+            <div style="width: 28px; height: 28px; border-radius: 6px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);"></div>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 8px;">
+          <div style="background: rgba(99,102,241,0.06); border: 1px solid rgba(99,102,241,0.12); border-radius: 10px; padding: 14px 12px; text-align: center; backdrop-filter: blur(10px);">
+            <div style="color: #a5b4fc; font-size: 20px; font-weight: 600;">12</div>
+            <div style="color: #6b7280; font-size: 10px; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px;">Videos</div>
+          </div>
+          <div style="background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.12); border-radius: 10px; padding: 14px 12px; text-align: center;">
+            <div style="color: #6ee7b7; font-size: 20px; font-weight: 600;">$4.20</div>
+            <div style="color: #6b7280; font-size: 10px; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px;">Spent</div>
+          </div>
+          <div style="background: rgba(244,114,182,0.06); border: 1px solid rgba(244,114,182,0.12); border-radius: 10px; padding: 14px 12px; text-align: center;">
+            <div style="color: #f9a8d4; font-size: 20px; font-weight: 600;">3</div>
+            <div style="color: #6b7280; font-size: 10px; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px;">Active</div>
+          </div>
+        </div>
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 12px; margin-top: 4px; backdrop-filter: blur(10px);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 6px; height: 6px; border-radius: 50%; background: #6366f1; animation: none; box-shadow: 0 0 6px rgba(99,102,241,0.4);"></div>
+              <span style="color: #d1d5db; font-size: 12px;">Семейка Ягодок — Ep. 5</span>
+            </div>
+            <span style="color: #6366f1; font-size: 10px; font-weight: 500; letter-spacing: 0.3px;">65%</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.04); border-radius: 3px; height: 3px; margin-top: 8px;">
+            <div style="background: linear-gradient(90deg, #6366f1, #8b5cf6, #a78bfa); width: 65%; height: 100%; border-radius: 3px; box-shadow: 0 0 8px rgba(99,102,241,0.3);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. Dark Premium</h3>
+      <p>Тёмная тема, glassmorphism, градиентные свечения, indigo/violet палитра. Как 21st.dev, Raycast. Максимально современный.</p>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top: 24px; text-align: center;">Кликни на вариант, который нравится, или опиши своё видение в терминале</p>
