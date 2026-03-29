@@ -32,11 +32,11 @@ def _normalize_config(raw: dict) -> dict:
 
     config: dict = {}
 
-    # Build scenario object
+    # Build scenario object — use video_id in series_name for unique run dirs
     scenes = raw.get("scenes", [])
     config["scenario"] = {
         "title": raw.get("title", "Generated Video"),
-        "series_name": raw.get("series_name", "Video Pipeline"),
+        "series_name": raw.get("series_name") or raw.get("_video_id", "video"),
         "episode_number": raw.get("episode_number", 1),
         "scenes": scenes,
     }
@@ -85,6 +85,7 @@ async def run_generation_task(
         await session.commit()
 
         try:
+            scenario_config["_video_id"] = video_id
             pipeline_config = _normalize_config(scenario_config)
             result = await run_pipeline_with_progress(
                 job_id=video_id,

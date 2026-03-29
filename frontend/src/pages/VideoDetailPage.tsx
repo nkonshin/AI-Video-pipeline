@@ -274,7 +274,7 @@ export default function VideoDetailPage() {
       {video.output_path && (
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl overflow-hidden">
           <video
-            src={`/media/${video.output_path}`}
+            src={`/media/${video.output_path.replace(/^output\//, '')}`}
             controls
             className="w-full max-w-3xl mx-auto rounded-lg bg-black"
           />
