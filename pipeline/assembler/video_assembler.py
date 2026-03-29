@@ -163,7 +163,7 @@ class VideoAssembler:
                     str(seg_path),
                 ]
             else:
-                # No audio — just normalize video
+                # No separate audio — keep video's built-in audio if present
                 cmd = [
                     "ffmpeg", "-y",
                     "-i", str(video),
@@ -173,7 +173,7 @@ class VideoAssembler:
                         "fps=30"
                     ),
                     "-c:v", "libx264", "-preset", "fast", "-crf", "23",
-                    "-an",
+                    "-c:a", "aac", "-b:a", "192k",
                     str(seg_path),
                 ]
 

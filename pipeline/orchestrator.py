@@ -122,8 +122,17 @@ class PipelineOrchestrator:
         result["videos"] = {k: str(v) for k, v in video_paths.items()}
 
         # --- Stage 3: TTS Voiceover ---
+        # Some video models generate their own audio (e.g. xai/grok-imagine-video).
+        # In that case, skip TTS and let the assembler use the video's built-in audio.
+        video_has_audio = _video_model_has_audio(self.config.video_model.model_id)
         audio_paths: dict[str, Path] = {}
-        if not skip_tts:
+        if video_has_audio:
+            log.info(
+                "[Pipeline] === Stage 3: TTS Voiceover === SKIPPED "
+                f"(video model '{self.config.video_model.model_id}' generates its own audio)"
+            )
+            result["video_has_audio"] = True
+        elif not skip_tts:
             log.info("[Pipeline] === Stage 3: TTS Voiceover ===")
             tts_client = None
             if self.config.tts.engine == "replicate":
@@ -197,3 +206,14 @@ def _load_existing(
                 result[scene.scene_id] = p
                 break
     return result
+
+
+# Video models that generate their own audio track
+_MODELS_WITH_AUDIO = {
+    "xai/grok-imagine-video",
+}
+
+
+def _video_model_has_audio(model_id: str) -> bool:
+    """Check if a video model generates audio in its output."""
+    return any(m in model_id for m in _MODELS_WITH_AUDIO)
