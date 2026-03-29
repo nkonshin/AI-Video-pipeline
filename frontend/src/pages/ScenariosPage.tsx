@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { api } from '../lib/api';
 import type { Scenario } from '../lib/types';
+import { useT } from '../lib/i18n';
 
 const CONTENT_TYPES = [
   { id: 'fruit-soap', label: 'Fruit Soap', emoji: '\u{1F353}' },
@@ -45,6 +46,7 @@ function getSceneCount(config: Record<string, any>): number {
 }
 
 export default function ScenariosPage() {
+  const t = useT();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [expandedYaml, setExpandedYaml] = useState<string | null>(null);
@@ -83,9 +85,9 @@ export default function ScenariosPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-gray-200">Scenarios</h1>
+          <h1 className="text-xl font-semibold text-gray-200">{t('scenarios.title')}</h1>
           <p className="text-gray-500 text-sm mt-1">
-            Manage reusable scenario templates
+            {t('scenarios.subtitle')}
           </p>
         </div>
 
@@ -102,7 +104,7 @@ export default function ScenariosPage() {
             ) : (
               <Sparkles className="h-4 w-4" />
             )}
-            Generate from Template
+            {t('scenarios.generate')}
             <ChevronDown className="h-3 w-3" />
           </button>
 
@@ -141,7 +143,7 @@ export default function ScenariosPage() {
       {!isLoading && sorted.length === 0 && (
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-12 text-center">
           <FileText className="h-10 w-10 text-gray-600 mx-auto mb-3" />
-          <p className="text-sm text-gray-400">No scenarios yet</p>
+          <p className="text-sm text-gray-400">{t('scenarios.noScenarios')}</p>
           <p className="text-xs text-gray-600 mt-1">
             Generate a scenario from a template to get started
           </p>
@@ -170,7 +172,7 @@ export default function ScenariosPage() {
                     <div className="flex items-center gap-3 mt-1.5">
                       <ContentTypeBadge type={scenario.content_type} />
                       <span className="text-xs text-gray-500">
-                        {sceneCount} scene{sceneCount !== 1 ? 's' : ''}
+                        {sceneCount} {t('scenarios.scenes')}
                       </span>
                       <span className="text-xs text-gray-600">
                         {formatDate(scenario.created_at)}
@@ -196,7 +198,7 @@ export default function ScenariosPage() {
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] text-sm text-gray-300 hover:bg-white/[0.08] transition"
                     >
                       <Play className="h-3.5 w-3.5" />
-                      Use
+                      {t('scenarios.use')}
                     </button>
                     <button
                       type="button"

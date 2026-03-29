@@ -8,8 +8,10 @@ import SceneEditor from '../components/create/SceneEditor';
 import type { Scene } from '../components/create/SceneEditor';
 import AdvancedSettings from '../components/create/AdvancedSettings';
 import CostEstimate from '../components/create/CostEstimate';
+import { useT } from '../lib/i18n';
 
 export default function CreateVideoPage() {
+  const t = useT();
   const navigate = useNavigate();
 
   const [contentType, setContentType] = useState('');
@@ -117,9 +119,9 @@ export default function CreateVideoPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-xl font-semibold text-gray-200">Create Video</h1>
+        <h1 className="text-xl font-semibold text-gray-200">{t('create.title')}</h1>
         <p className="text-gray-500 text-sm mt-1">
-          Configure and launch a new generation
+          {t('create.subtitle')}
         </p>
       </div>
 
@@ -128,7 +130,7 @@ export default function CreateVideoPage() {
       {loadingScenario && (
         <div className="flex items-center gap-2 text-sm text-gray-400">
           <div className="h-4 w-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          Generating scenario...
+          {t('create.generatingScenario')}
         </div>
       )}
 

@@ -14,30 +14,31 @@ import {
 } from 'lucide-react';
 import { api } from '../lib/api';
 import type { Video, PlatformStatus } from '../lib/types';
+import { useT } from '../lib/i18n';
 
-function StatusBadge({ status }: { status: Video['status'] }) {
+function StatusBadge({ status, t }: { status: Video['status']; t: (key: string, ...args: any[]) => string }) {
   const config: Record<
     Video['status'],
     { icon: React.ReactNode; label: string; cls: string }
   > = {
     completed: {
       icon: <CheckCircle className="h-3.5 w-3.5" />,
-      label: 'Completed',
+      label: t('videos.status.completed'),
       cls: 'bg-emerald-500/20 text-emerald-300',
     },
     running: {
       icon: <Loader className="h-3.5 w-3.5 animate-spin" />,
-      label: 'Running',
+      label: t('videos.status.running'),
       cls: 'bg-indigo-500/20 text-indigo-300 animate-pulse',
     },
     pending: {
       icon: <Clock className="h-3.5 w-3.5" />,
-      label: 'Pending',
+      label: t('videos.status.pending'),
       cls: 'bg-gray-500/20 text-gray-300',
     },
     failed: {
       icon: <AlertCircle className="h-3.5 w-3.5" />,
-      label: 'Failed',
+      label: t('videos.status.failed'),
       cls: 'bg-red-500/20 text-red-300',
     },
   };
@@ -153,6 +154,7 @@ function PlatformSelector({
 }
 
 export default function VideoDetailPage() {
+  const t = useT();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -204,7 +206,7 @@ export default function VideoDetailPage() {
           className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-gray-200 transition"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Videos
+          {t('videoDetail.backToVideos')}
         </button>
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-8 text-center">
           <AlertCircle className="h-8 w-8 text-red-400 mx-auto mb-2" />
@@ -246,17 +248,17 @@ export default function VideoDetailPage() {
             <h1 className="text-xl font-semibold text-gray-200">
               {video.title}
             </h1>
-            <StatusBadge status={video.status} />
+            <StatusBadge status={video.status} t={t} />
           </div>
           <div className="flex items-center gap-4 text-xs text-gray-500">
             <span className="uppercase tracking-wider">
               {video.content_type}
             </span>
-            <span>Created {formatDate(video.created_at)}</span>
+            <span>{t('videoDetail.created')} {formatDate(video.created_at)}</span>
             {video.completed_at && (
-              <span>Completed {formatDate(video.completed_at)}</span>
+              <span>{t('videoDetail.completed')} {formatDate(video.completed_at)}</span>
             )}
-            {video.cost > 0 && <span>Cost: ${video.cost.toFixed(2)}</span>}
+            {video.cost > 0 && <span>{t('videoDetail.cost')}: ${video.cost.toFixed(2)}</span>}
           </div>
         </div>
       </div>
@@ -282,7 +284,7 @@ export default function VideoDetailPage() {
       {/* Scenario config */}
       {scenarioConfig.scenes && scenarioConfig.scenes.length > 0 && (
         <div className="space-y-3">
-          <h2 className="text-sm font-medium text-gray-200">Scenes</h2>
+          <h2 className="text-sm font-medium text-gray-200">{t('videoDetail.scenes')}</h2>
           <div className="space-y-3">
             {scenarioConfig.scenes.map((scene, idx) => (
               <div
@@ -343,7 +345,7 @@ export default function VideoDetailPage() {
       {/* Publications */}
       {video.publications && video.publications.length > 0 && (
         <div className="space-y-3">
-          <h2 className="text-sm font-medium text-gray-200">Publications</h2>
+          <h2 className="text-sm font-medium text-gray-200">{t('videoDetail.publications')}</h2>
           <div className="space-y-2">
             {video.publications.map((pub) => (
               <div
@@ -409,7 +411,7 @@ export default function VideoDetailPage() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-sm font-medium hover:brightness-110 transition"
           >
             <Send className="h-4 w-4" />
-            Publish
+            {t('videoDetail.publish')}
           </button>
         )}
 
@@ -419,7 +421,7 @@ export default function VideoDetailPage() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-red-500/30 text-red-400 text-sm font-medium hover:bg-red-500/10 transition"
           >
             <Trash2 className="h-4 w-4" />
-            Delete
+            {t('videoDetail.delete')}
           </button>
         ) : (
           <div className="flex items-center gap-2">
@@ -433,7 +435,7 @@ export default function VideoDetailPage() {
               ) : (
                 <Trash2 className="h-4 w-4" />
               )}
-              Confirm Delete
+              {t('videoDetail.confirmDelete')}
             </button>
             <button
               onClick={() => setConfirmDelete(false)}

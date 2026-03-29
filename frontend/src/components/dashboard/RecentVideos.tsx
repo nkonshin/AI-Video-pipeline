@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Play, CheckCircle, AlertCircle, Clock, Loader } from 'lucide-react';
 import { api } from '../../lib/api';
 import type { VideoList, Video } from '../../lib/types';
+import { useT } from '../../lib/i18n';
 
 const gradients = [
   'from-indigo-600 to-violet-700',
@@ -9,29 +10,29 @@ const gradients = [
   'from-pink-600 to-rose-700',
 ];
 
-function StatusBadge({ status }: { status: Video['status'] }) {
+function StatusBadge({ status, t }: { status: Video['status']; t: (key: string, ...args: any[]) => string }) {
   const config: Record<
     Video['status'],
     { icon: React.ReactNode; label: string; cls: string }
   > = {
     completed: {
       icon: <CheckCircle className="h-3 w-3" />,
-      label: 'Completed',
+      label: t('videos.status.completed'),
       cls: 'bg-emerald-500/20 text-emerald-300',
     },
     running: {
       icon: <Loader className="h-3 w-3" />,
-      label: 'Running',
+      label: t('videos.status.running'),
       cls: 'bg-amber-500/20 text-amber-300',
     },
     pending: {
       icon: <Clock className="h-3 w-3" />,
-      label: 'Pending',
+      label: t('videos.status.pending'),
       cls: 'bg-gray-500/20 text-gray-300',
     },
     failed: {
       icon: <AlertCircle className="h-3 w-3" />,
-      label: 'Failed',
+      label: t('videos.status.failed'),
       cls: 'bg-red-500/20 text-red-300',
     },
   };
@@ -59,6 +60,7 @@ function formatDate(iso: string): string {
 }
 
 export default function RecentVideos() {
+  const t = useT();
   const { data } = useQuery<VideoList>({
     queryKey: ['videos'],
     queryFn: () => api.getVideos(),
@@ -76,10 +78,10 @@ export default function RecentVideos() {
     return (
       <div>
         <h2 className="text-sm font-medium text-gray-200 mb-4">
-          Recent Videos
+          {t('dashboard.recentVideos')}
         </h2>
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-8 text-center text-gray-500">
-          <p className="text-sm">No videos yet. Create your first one!</p>
+          <p className="text-sm">{t('dashboard.noVideos')}</p>
         </div>
       </div>
     );
@@ -106,7 +108,7 @@ export default function RecentVideos() {
                 <Play className="h-4 w-4 ml-0.5" />
               </button>
               <div className="absolute top-3 right-3 z-10">
-                <StatusBadge status={video.status} />
+                <StatusBadge status={video.status} t={t} />
               </div>
             </div>
 

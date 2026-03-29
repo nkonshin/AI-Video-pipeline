@@ -1,4 +1,5 @@
 import { Plus, Trash2 } from 'lucide-react';
+import { useT } from '../../lib/i18n';
 
 export interface Scene {
   scene_id: string;
@@ -17,6 +18,7 @@ function makeId() {
 }
 
 export default function SceneEditor({ scenes, onChange }: SceneEditorProps) {
+  const t = useT();
   const updateScene = (index: number, patch: Partial<Scene>) => {
     const next = scenes.map((s, i) => (i === index ? { ...s, ...patch } : s));
     onChange(next);
@@ -42,7 +44,7 @@ export default function SceneEditor({ scenes, onChange }: SceneEditorProps) {
     <div>
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-sm font-medium text-gray-400">
-          Scenes ({scenes.length})
+          {t('create.scenes')} ({scenes.length})
         </h2>
         <button
           type="button"
@@ -50,7 +52,7 @@ export default function SceneEditor({ scenes, onChange }: SceneEditorProps) {
           className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 transition"
         >
           <Plus className="h-3.5 w-3.5" />
-          Add Scene
+          {t('create.addScene')}
         </button>
       </div>
 
@@ -78,7 +80,7 @@ export default function SceneEditor({ scenes, onChange }: SceneEditorProps) {
             <div className="space-y-3">
               <div>
                 <label className="block text-xs text-gray-500 mb-1">
-                  Scene Name
+                  {t('create.sceneName')}
                 </label>
                 <input
                   type="text"
@@ -93,14 +95,14 @@ export default function SceneEditor({ scenes, onChange }: SceneEditorProps) {
 
               <div>
                 <label className="block text-xs text-gray-500 mb-1">
-                  Image Prompt
+                  {t('create.imagePrompt')}
                 </label>
                 <textarea
                   value={scene.image_prompt}
                   onChange={(e) =>
                     updateScene(i, { image_prompt: e.target.value })
                   }
-                  placeholder="Describe the visual for this scene..."
+                  placeholder={t('create.describeImage')}
                   rows={2}
                   className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition resize-none"
                 />
@@ -108,14 +110,14 @@ export default function SceneEditor({ scenes, onChange }: SceneEditorProps) {
 
               <div>
                 <label className="block text-xs text-gray-500 mb-1">
-                  Voiceover Text
+                  {t('create.voiceoverText')}
                 </label>
                 <textarea
                   value={scene.voiceover_text}
                   onChange={(e) =>
                     updateScene(i, { voiceover_text: e.target.value })
                   }
-                  placeholder="What the narrator says during this scene..."
+                  placeholder={t('create.narratorSays')}
                   rows={2}
                   className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition resize-none"
                 />

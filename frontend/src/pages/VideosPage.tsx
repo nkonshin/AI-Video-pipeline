@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { api } from '../lib/api';
 import type { VideoList, Video } from '../lib/types';
+import { useT } from '../lib/i18n';
 
 const gradients = [
   'from-indigo-600 to-violet-700',
@@ -21,45 +22,32 @@ const gradients = [
   'from-cyan-600 to-blue-700',
 ];
 
-const CONTENT_TYPES = [
-  { value: '', label: 'All types' },
-  { value: 'fruit-soap', label: 'Fruit Soap' },
-  { value: 'character-remix', label: 'Character Remix' },
-  { value: 'mascot', label: 'Mascot' },
-  { value: 'custom', label: 'Custom' },
-];
+const CONTENT_TYPE_VALUES = ['', 'fruit-soap', 'character-remix', 'mascot', 'custom'];
+const STATUS_VALUES = ['', 'pending', 'running', 'completed', 'failed'];
 
-const STATUSES = [
-  { value: '', label: 'All statuses' },
-  { value: 'pending', label: 'Pending' },
-  { value: 'running', label: 'Running' },
-  { value: 'completed', label: 'Completed' },
-  { value: 'failed', label: 'Failed' },
-];
-
-function StatusBadge({ status }: { status: Video['status'] }) {
+function StatusBadge({ status, t }: { status: Video['status']; t: (key: string, ...args: any[]) => string }) {
   const config: Record<
     Video['status'],
     { icon: React.ReactNode; label: string; cls: string }
   > = {
     completed: {
       icon: <CheckCircle className="h-3 w-3" />,
-      label: 'Completed',
+      label: t('videos.status.completed'),
       cls: 'bg-emerald-500/20 text-emerald-300',
     },
     running: {
       icon: <Loader className="h-3 w-3 animate-spin" />,
-      label: 'Running',
+      label: t('videos.status.running'),
       cls: 'bg-indigo-500/20 text-indigo-300 animate-pulse',
     },
     pending: {
       icon: <Clock className="h-3 w-3" />,
-      label: 'Pending',
+      label: t('videos.status.pending'),
       cls: 'bg-gray-500/20 text-gray-300',
     },
     failed: {
       icon: <AlertCircle className="h-3 w-3" />,
-      label: 'Failed',
+      label: t('videos.status.failed'),
       cls: 'bg-red-500/20 text-red-300',
     },
   };
@@ -95,6 +83,7 @@ function formatDate(iso: string): string {
 }
 
 export default function VideosPage() {
+  const t = useT();
   const navigate = useNavigate();
   const [contentType, setContentType] = useState('');
   const [status, setStatus] = useState('');
@@ -120,9 +109,9 @@ export default function VideosPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-gray-200">My Videos</h1>
+          <h1 className="text-xl font-semibold text-gray-200">{t('videos.title')}</h1>
           <p className="text-gray-500 text-sm mt-1">
-            Browse and manage your videos
+            {t('videos.subtitle')}
           </p>
         </div>
         <Link
@@ -141,9 +130,9 @@ export default function VideosPage() {
           onChange={(e) => setContentType(e.target.value)}
           className="bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2 text-sm text-gray-300 outline-none focus:border-indigo-500/50 transition"
         >
-          {CONTENT_TYPES.map((ct) => (
-            <option key={ct.value} value={ct.value}>
-              {ct.label}
+          {CONTENT_TYPE_VALUES.map((v) => (
+            <option key={v} value={v}>
+              {v === '' ? t('videos.allTypes') : v}
             </option>
           ))}
         </select>
@@ -152,9 +141,9 @@ export default function VideosPage() {
           onChange={(e) => setStatus(e.target.value)}
           className="bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2 text-sm text-gray-300 outline-none focus:border-indigo-500/50 transition"
         >
-          {STATUSES.map((s) => (
-            <option key={s.value} value={s.value}>
-              {s.label}
+          {STATUS_VALUES.map((v) => (
+            <option key={v} value={v}>
+              {v === '' ? t('videos.allStatuses') : t(`videos.status.${v}`)}
             </option>
           ))}
         </select>
@@ -176,7 +165,7 @@ export default function VideosPage() {
       {!isLoading && videos.length === 0 && (
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-12 text-center">
           <Film className="h-10 w-10 text-gray-600 mx-auto mb-3" />
-          <p className="text-sm text-gray-400">No videos yet</p>
+          <p className="text-sm text-gray-400">{t('videos.noVideos')}</p>
           <p className="text-xs text-gray-600 mt-1">
             Create your first video to get started
           </p>
@@ -201,7 +190,7 @@ export default function VideosPage() {
                   <Play className="h-4 w-4 ml-0.5" />
                 </div>
                 <div className="absolute top-3 right-3 z-10">
-                  <StatusBadge status={video.status} />
+                  <StatusBadge status={video.status} t={t} />
                 </div>
               </div>
 

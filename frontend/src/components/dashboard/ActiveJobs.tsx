@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Clapperboard, Clock } from 'lucide-react';
 import { api } from '../../lib/api';
 import type { VideoList, Video } from '../../lib/types';
+import { useT } from '../../lib/i18n';
 
 function progressForStage(status: Video['status']): number {
   switch (status) {
@@ -34,6 +35,7 @@ function stageLabelFor(status: Video['status']): string {
 }
 
 export default function ActiveJobs() {
+  const t = useT();
   const { data } = useQuery<VideoList>({
     queryKey: ['videos'],
     queryFn: () => api.getVideos(),
@@ -48,11 +50,11 @@ export default function ActiveJobs() {
     return (
       <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-6">
         <h2 className="text-sm font-medium text-gray-200 mb-4">
-          Active Generations
+          {t('dashboard.activeGenerations')}
         </h2>
         <div className="flex flex-col items-center justify-center py-8 text-gray-500">
           <Clock className="h-8 w-8 mb-2 opacity-40" />
-          <p className="text-sm">No active jobs</p>
+          <p className="text-sm">{t('dashboard.noActiveJobs')}</p>
         </div>
       </div>
     );

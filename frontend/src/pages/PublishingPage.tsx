@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { api } from '../lib/api';
 import type { PlatformStatus, PublishLogEntry } from '../lib/types';
+import { useT } from '../lib/i18n';
 
 const PLATFORM_META: Record<string, { emoji: string; color: string }> = {
   telegram: { emoji: 'T', color: 'from-sky-500 to-blue-600' },
@@ -58,6 +59,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export default function PublishingPage() {
+  const t = useT();
   const queryClient = useQueryClient();
 
   const { data: platforms, isLoading: loadingPlatforms } = useQuery<
@@ -87,15 +89,15 @@ export default function PublishingPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold text-gray-200">Publishing</h1>
+        <h1 className="text-xl font-semibold text-gray-200">{t('publishing.title')}</h1>
         <p className="text-gray-500 text-sm mt-1">
-          Manage platform connections and publication history
+          {t('publishing.subtitle')}
         </p>
       </div>
 
       {/* Platform Cards */}
       <div>
-        <h2 className="text-sm font-medium text-gray-400 mb-3">Platforms</h2>
+        <h2 className="text-sm font-medium text-gray-400 mb-3">{t('publishing.platforms')}</h2>
 
         {loadingPlatforms && (
           <div className="flex items-center justify-center py-12">
@@ -148,7 +150,7 @@ export default function PublishingPage() {
                           }`}
                         />
                         <span className="text-xs text-gray-500">
-                          {platform.connected ? 'Connected' : 'Not connected'}
+                          {platform.connected ? t('publishing.connected') : t('publishing.notConfigured')}
                         </span>
                       </div>
                     </div>
@@ -200,7 +202,7 @@ export default function PublishingPage() {
       {/* Publication Log */}
       <div>
         <h2 className="text-sm font-medium text-gray-400 mb-3">
-          Publication Log
+          {t('publishing.log')}
         </h2>
 
         {loadingLog && (
@@ -212,7 +214,7 @@ export default function PublishingPage() {
         {!loadingLog && (!log || log.length === 0) && (
           <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-12 text-center">
             <Send className="h-10 w-10 text-gray-600 mx-auto mb-3" />
-            <p className="text-sm text-gray-400">No publications yet</p>
+            <p className="text-sm text-gray-400">{t('publishing.noPublications')}</p>
             <p className="text-xs text-gray-600 mt-1">
               Published videos will appear here
             </p>

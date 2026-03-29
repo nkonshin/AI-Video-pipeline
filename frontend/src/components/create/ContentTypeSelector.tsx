@@ -1,36 +1,37 @@
 import { Check } from 'lucide-react';
+import { useT } from '../../lib/i18n';
 
 interface ContentType {
   id: string;
-  label: string;
+  labelKey: string;
   emoji: string;
-  description: string;
+  descKey: string;
 }
 
 const CONTENT_TYPES: ContentType[] = [
   {
     id: 'fruit-soap',
-    label: 'Fruit Soap',
+    labelKey: 'create.fruitSoap',
     emoji: '\u{1F353}',
-    description: 'Satisfying soap-cutting videos with fruit themes',
+    descKey: 'create.fruitSoapDesc',
   },
   {
     id: 'character-remix',
-    label: 'Character Remix',
+    labelKey: 'create.characterRemix',
     emoji: '\u{1F3AD}',
-    description: 'Popular characters in unexpected scenarios',
+    descKey: 'create.characterRemixDesc',
   },
   {
     id: 'mascot',
-    label: 'Business Mascot',
+    labelKey: 'create.mascot',
     emoji: '\u{1F3E2}',
-    description: 'Animated mascot videos for brands',
+    descKey: 'create.mascotDesc',
   },
   {
     id: 'custom',
-    label: 'Custom',
+    labelKey: 'create.custom',
     emoji: '\u{270F}\u{FE0F}',
-    description: 'Build your own scenario from scratch',
+    descKey: 'create.customDesc',
   },
 ];
 
@@ -43,9 +44,11 @@ export default function ContentTypeSelector({
   selected,
   onSelect,
 }: ContentTypeSelectorProps) {
+  const t = useT();
+
   return (
     <div>
-      <h2 className="text-sm font-medium text-gray-400 mb-3">Content Type</h2>
+      <h2 className="text-sm font-medium text-gray-400 mb-3">{t('create.contentType')}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {CONTENT_TYPES.map((ct) => {
           const isSelected = selected === ct.id;
@@ -67,9 +70,9 @@ export default function ContentTypeSelector({
               )}
               <span className="text-2xl">{ct.emoji}</span>
               <p className="text-sm font-medium text-gray-200 mt-2">
-                {ct.label}
+                {t(ct.labelKey)}
               </p>
-              <p className="text-xs text-gray-500 mt-1">{ct.description}</p>
+              <p className="text-xs text-gray-500 mt-1">{t(ct.descKey)}</p>
             </button>
           );
         })}

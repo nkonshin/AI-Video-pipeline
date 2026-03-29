@@ -1,4 +1,5 @@
 import { Loader } from 'lucide-react';
+import { useT } from '../../lib/i18n';
 
 interface CostEstimateProps {
   sceneCount: number;
@@ -31,6 +32,7 @@ export default function CostEstimate({
   onGenerate,
   generating,
 }: CostEstimateProps) {
+  const t = useT();
   const imgPrice = IMAGE_PRICES[imageModel] ?? 0;
   const vidPrice = VIDEO_PRICES[videoModel] ?? 0;
   const perScene = imgPrice + vidPrice;
@@ -41,7 +43,7 @@ export default function CostEstimate({
 
   return (
     <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5">
-      <h2 className="text-sm font-medium text-gray-400 mb-4">Cost Estimate</h2>
+      <h2 className="text-sm font-medium text-gray-400 mb-4">{t('create.estimatedCost')}</h2>
 
       <div className="space-y-2 text-sm">
         <div className="flex justify-between text-gray-400">
@@ -89,10 +91,10 @@ export default function CostEstimate({
         {generating ? (
           <span className="inline-flex items-center gap-2">
             <Loader className="h-4 w-4 animate-spin" />
-            Generating...
+            {t('create.generating')}
           </span>
         ) : (
-          'Generate Video'
+          t('create.generateVideo')
         )}
       </button>
     </div>

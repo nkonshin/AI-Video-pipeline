@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Film, DollarSign, Share2, Loader } from 'lucide-react';
 import { api } from '../../lib/api';
 import type { VideoList, Budget } from '../../lib/types';
+import { useT } from '../../lib/i18n';
 
 interface StatCard {
   label: string;
@@ -12,6 +13,7 @@ interface StatCard {
 }
 
 export default function StatsCards() {
+  const t = useT();
   const { data: videoData } = useQuery<VideoList>({
     queryKey: ['videos'],
     queryFn: () => api.getVideos(),
@@ -32,28 +34,28 @@ export default function StatsCards() {
 
   const cards: StatCard[] = [
     {
-      label: 'Total Videos',
+      label: t('dashboard.totalVideos'),
       value: String(totalVideos),
       icon: <Film className="h-4 w-4" />,
       accent: 'text-indigo-300',
       bgGlow: 'bg-indigo-500/10',
     },
     {
-      label: 'Budget Spent',
+      label: t('dashboard.budgetSpent'),
       value: `$${budgetSpent.toFixed(2)}`,
       icon: <DollarSign className="h-4 w-4" />,
       accent: 'text-emerald-300',
       bgGlow: 'bg-emerald-500/10',
     },
     {
-      label: 'Published',
+      label: t('dashboard.published'),
       value: String(published),
       icon: <Share2 className="h-4 w-4" />,
       accent: 'text-pink-300',
       bgGlow: 'bg-pink-500/10',
     },
     {
-      label: 'Active Jobs',
+      label: t('dashboard.activeJobs'),
       value: String(activeJobs),
       icon: <Loader className="h-4 w-4" />,
       accent: 'text-amber-300',

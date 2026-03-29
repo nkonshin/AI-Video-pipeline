@@ -19,8 +19,12 @@ import {
   VOICES,
 } from '../components/create/AdvancedSettings';
 import { ModelSelector } from '../components/shared/ModelSelector';
+import { useT, useLang } from '../lib/i18n';
+import type { Lang } from '../lib/i18n';
 
 export default function SettingsPage() {
+  const t = useT();
+  const { lang, setLang } = useLang();
   const queryClient = useQueryClient();
 
   const { data: settings, isLoading: loadingSettings } = useQuery<Settings>({
@@ -104,8 +108,8 @@ export default function SettingsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-gray-200">Settings</h1>
-          <p className="text-gray-500 text-sm mt-1">Global configuration</p>
+          <h1 className="text-xl font-semibold text-gray-200">{t('settingsPage.title')}</h1>
+          <p className="text-gray-500 text-sm mt-1">{t('settingsPage.subtitle')}</p>
         </div>
         <button
           type="button"
@@ -120,7 +124,7 @@ export default function SettingsPage() {
           ) : (
             <Save className="h-4 w-4" />
           )}
-          {saved ? 'Saved' : 'Save Settings'}
+          {saved ? t('settingsPage.saved') : t('settingsPage.saveSettings')}
         </button>
       </div>
 
@@ -128,7 +132,7 @@ export default function SettingsPage() {
       {saved && (
         <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-sm text-emerald-300">
           <CheckCircle className="h-4 w-4 shrink-0" />
-          Settings saved successfully
+          {t('settingsPage.saved')}
         </div>
       )}
 
@@ -137,17 +141,17 @@ export default function SettingsPage() {
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 space-y-4">
           <div className="flex items-center gap-2">
             <Key className="h-4 w-4 text-gray-500" />
-            <h2 className="text-sm font-medium text-gray-300">API Keys</h2>
+            <h2 className="text-sm font-medium text-gray-300">{t('settingsPage.apiKeys')}</h2>
           </div>
 
           <div>
             <label className="block text-xs text-gray-500 mb-1">
-              Replicate API Token
+              {t('settingsPage.replicateToken')}
             </label>
             {tokenConfigured && !tokenTouched && (
               <div className="flex items-center gap-2 mb-2 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                 <CheckCircle className="h-3.5 w-3.5 text-emerald-400" />
-                <span className="text-xs text-emerald-300">Token configured ({settings?.replicate_api_token})</span>
+                <span className="text-xs text-emerald-300">{t('settingsPage.tokenConfigured')} ({settings?.replicate_api_token})</span>
               </div>
             )}
             <div className="relative">
@@ -155,7 +159,7 @@ export default function SettingsPage() {
                 type={showToken ? 'text' : 'password'}
                 value={apiToken}
                 onChange={(e) => { setApiToken(e.target.value); setTokenTouched(true); }}
-                placeholder={tokenConfigured ? 'Enter new token to replace...' : 'r8_...'}
+                placeholder={tokenConfigured ? t('settingsPage.enterNewToken') : 'r8_...'}
                 className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2.5 text-sm text-gray-300 pr-10 focus:outline-none focus:border-indigo-500/50 transition"
               />
               <button
@@ -178,7 +182,7 @@ export default function SettingsPage() {
           <div className="flex items-center gap-2">
             <Cpu className="h-4 w-4 text-gray-500" />
             <h2 className="text-sm font-medium text-gray-300">
-              Default Models
+              {t('settingsPage.defaultModels')}
             </h2>
           </div>
 
@@ -220,12 +224,12 @@ export default function SettingsPage() {
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 space-y-4">
           <div className="flex items-center gap-2">
             <DollarSign className="h-4 w-4 text-gray-500" />
-            <h2 className="text-sm font-medium text-gray-300">Budget</h2>
+            <h2 className="text-sm font-medium text-gray-300">{t('settingsPage.budget')}</h2>
           </div>
 
           <div>
             <label className="block text-xs text-gray-500 mb-1">
-              Monthly Limit ($)
+              {t('settingsPage.budgetLimit')}
             </label>
             <input
               type="number"
@@ -241,10 +245,10 @@ export default function SettingsPage() {
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-xs text-gray-500">
-                Spent: ${budgetSpent.toFixed(2)}
+                {t('settingsPage.spent')}: ${budgetSpent.toFixed(2)}
               </span>
               <span className="text-xs text-gray-500">
-                Remaining: ${budgetRemaining.toFixed(2)}
+                {t('settingsPage.remaining')}: ${budgetRemaining.toFixed(2)}
               </span>
             </div>
             <div className="h-2 rounded-full bg-white/[0.06] overflow-hidden">
@@ -271,12 +275,12 @@ export default function SettingsPage() {
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 space-y-4">
           <div className="flex items-center gap-2">
             <FolderOpen className="h-4 w-4 text-gray-500" />
-            <h2 className="text-sm font-medium text-gray-300">Output</h2>
+            <h2 className="text-sm font-medium text-gray-300">{t('settingsPage.output')}</h2>
           </div>
 
           <div>
             <label className="block text-xs text-gray-500 mb-1">
-              Output Directory
+              {t('settingsPage.outputDir')}
             </label>
             <div className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2.5 text-sm text-gray-500 font-mono">
               {settings?.output_dir || 'Not configured'}
@@ -284,6 +288,27 @@ export default function SettingsPage() {
             <p className="text-[11px] text-gray-600 mt-1">
               Configured on the backend. Generated videos are saved here.
             </p>
+          </div>
+        </div>
+
+        {/* Language */}
+        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-5 space-y-4">
+          <h2 className="text-sm font-medium text-gray-300">{t('settingsPage.language')}</h2>
+          <div className="flex items-center gap-2">
+            {(['en', 'ru'] as Lang[]).map((l) => (
+              <button
+                key={l}
+                type="button"
+                onClick={() => setLang(l)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                  lang === l
+                    ? 'bg-indigo-500 text-white'
+                    : 'bg-white/[0.04] text-gray-400 hover:bg-white/[0.08]'
+                }`}
+              >
+                {l === 'en' ? 'English' : 'Русский'}
+              </button>
+            ))}
           </div>
         </div>
       </div>
