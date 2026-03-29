@@ -100,8 +100,11 @@ class PipelineOrchestrator:
                     character_descriptions=self.config.scenario.character_descriptions,
                 )
                 result["budget_after_images"] = client.budget_remaining
-        elif images_dir:
-            image_paths = _load_existing(images_dir, scenes, ["png", "jpg", "webp"])
+        else:
+            # Load existing images from run dir or provided dir
+            src = images_dir or self.run_dirs["images"]
+            image_paths = _load_existing(src, scenes, ["png", "jpg", "webp"])
+            log.info(f"[Pipeline] === Stage 1: Image Generation === SKIPPED (loaded {len(image_paths)} existing)")
         result["images"] = {k: str(v) for k, v in image_paths.items()}
 
         # --- Stage 2: Video Generation ---
@@ -117,8 +120,11 @@ class PipelineOrchestrator:
                     scenes, image_paths, self.run_dirs["videos"]
                 )
                 result["budget_after_video"] = client.budget_remaining
-        elif videos_dir:
-            video_paths = _load_existing(videos_dir, scenes, ["mp4", "webm"])
+        else:
+            # Load existing videos from run dir or provided dir
+            src = videos_dir or self.run_dirs["videos"]
+            video_paths = _load_existing(src, scenes, ["mp4", "webm"])
+            log.info(f"[Pipeline] === Stage 2: Video Generation === SKIPPED (loaded {len(video_paths)} existing)")
         result["videos"] = {k: str(v) for k, v in video_paths.items()}
 
         # --- Stage 3: TTS Voiceover ---
