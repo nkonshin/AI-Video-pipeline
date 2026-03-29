@@ -114,6 +114,7 @@ class SceneConfig(BaseModel):
     scene_id: str
     description: str  # human description of what happens
     image_prompt: str  # prompt for image generation
+    video_prompt: str = ""  # prompt for video generation (motion, action). Falls back to description if empty.
     voiceover_text: str  # text for TTS
     duration: float = 5.0  # seconds
     camera_motion: str = ""  # e.g. "zoom in", "pan left"

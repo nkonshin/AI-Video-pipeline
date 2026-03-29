@@ -5,6 +5,7 @@ export interface Scene {
   scene_id: string;
   description: string;
   image_prompt: string;
+  video_prompt: string;
   voiceover_text: string;
 }
 
@@ -31,6 +32,7 @@ export default function SceneEditor({ scenes, onChange }: SceneEditorProps) {
         scene_id: makeId(),
         description: '',
         image_prompt: '',
+        video_prompt: '',
         voiceover_text: '',
       },
     ]);
@@ -103,6 +105,21 @@ export default function SceneEditor({ scenes, onChange }: SceneEditorProps) {
                     updateScene(i, { image_prompt: e.target.value })
                   }
                   placeholder={t('create.describeImage')}
+                  rows={2}
+                  className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition resize-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">
+                  {t('create.videoPrompt')}
+                </label>
+                <textarea
+                  value={scene.video_prompt}
+                  onChange={(e) =>
+                    updateScene(i, { video_prompt: e.target.value })
+                  }
+                  placeholder={t('create.describeMotion')}
                   rows={2}
                   className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition resize-none"
                 />

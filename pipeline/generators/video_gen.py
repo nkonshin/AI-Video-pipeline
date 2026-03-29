@@ -55,41 +55,41 @@ class VideoGenerator:
 
         if "minimax" in model or "hailuo" in model:
             params.update({
-                "prompt": scene.description or scene.image_prompt,
+                "prompt": scene.video_prompt or scene.description or scene.image_prompt,
                 "first_frame_image": image_uri,
             })
         elif "wan-video" in model or "wan-2" in model:
             params.update({
                 "image": image_uri,
-                "prompt": scene.description or scene.image_prompt,
+                "prompt": scene.video_prompt or scene.description or scene.image_prompt,
             })
         elif "kling" in model:
             params.update({
-                "prompt": scene.description or scene.image_prompt,
+                "prompt": scene.video_prompt or scene.description or scene.image_prompt,
                 "start_image": image_uri,
                 "duration": str(self.config.duration),
             })
         elif "seedance" in model:
             params.update({
-                "prompt": scene.description or scene.image_prompt,
+                "prompt": scene.video_prompt or scene.description or scene.image_prompt,
                 "image": image_uri,
                 "duration": self.config.duration,
             })
         elif "veo" in model:
             params.update({
-                "prompt": scene.description or scene.image_prompt,
+                "prompt": scene.video_prompt or scene.description or scene.image_prompt,
                 "image": image_uri,
             })
         elif "grok" in model or "xai" in model:
             params.update({
-                "prompt": scene.description or scene.image_prompt,
+                "prompt": scene.video_prompt or scene.description or scene.image_prompt,
                 "image": image_uri,
             })
         else:
             # Generic image-to-video
             params.update({
                 "image": image_uri,
-                "prompt": scene.description or scene.image_prompt,
+                "prompt": scene.video_prompt or scene.description or scene.image_prompt,
             })
 
         return params

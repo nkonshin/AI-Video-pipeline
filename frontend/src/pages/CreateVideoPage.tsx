@@ -56,6 +56,7 @@ export default function CreateVideoPage() {
           scene_id: crypto.randomUUID?.() ?? String(Date.now()),
           description: '',
           image_prompt: '',
+          video_prompt: '',
           voiceover_text: '',
         },
       ]);
@@ -70,6 +71,7 @@ export default function CreateVideoPage() {
           scene_id?: string;
           description?: string;
           image_prompt?: string;
+          video_prompt?: string;
           voiceover_text?: string;
         }>;
       };
@@ -80,6 +82,7 @@ export default function CreateVideoPage() {
               s.scene_id ?? crypto.randomUUID?.() ?? String(Date.now() + i),
             description: s.description ?? '',
             image_prompt: s.image_prompt ?? '',
+            video_prompt: s.video_prompt ?? '',
             voiceover_text: s.voiceover_text ?? '',
           })),
         );
@@ -90,6 +93,7 @@ export default function CreateVideoPage() {
           scene_id: crypto.randomUUID?.() ?? String(Date.now()),
           description: '',
           image_prompt: '',
+          video_prompt: '',
           voiceover_text: '',
         },
       ]);
