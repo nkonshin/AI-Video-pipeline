@@ -381,3 +381,126 @@ class MascotContentGenerator:
     @classmethod
     def available_businesses(cls) -> list[str]:
         return list(cls.BUSINESS_TYPES.keys())
+
+
+class CatProgrammerGenerator:
+    """Generates episodes about a cat programmer - Barsik.
+
+    Designed for video models with built-in audio (e.g. Grok):
+    - video_prompt describes action and motion
+    - voiceover_text is narrator voiceover (combined with video_prompt for Grok)
+    - image_prompt is a detailed visual description for image generation
+    """
+
+    CHARACTER = "Barsik the fluffy orange tabby cat programmer wearing tiny glasses"
+    CHARACTER_DESC = (
+        "A fluffy orange tabby cat with big expressive green eyes, wearing tiny round glasses, "
+        "anthropomorphic, sitting upright, 3D Pixar style, highly detailed fur texture, cute"
+    )
+
+    EPISODES = [
+        {
+            "title": "Обычный день Барсика",
+            "scenes": [
+                {
+                    "description": "Утро",
+                    "image_prompt": (
+                        "A fluffy orange tabby cat sitting at a desk with multiple monitors showing colorful code, "
+                        "wearing tiny round glasses, cozy room with warm morning light streaming through window, "
+                        "coffee mug with cat paw print on desk, 3D Pixar style, highly detailed, cute character"
+                    ),
+                    "video_prompt": (
+                        "The cat slowly opens its eyes, yawns showing tiny teeth, stretches its paws, "
+                        "then puts on tiny glasses and looks at the monitors with a sleepy but determined expression, "
+                        "warm morning light fills the room, slow camera zoom in to the cat's face"
+                    ),
+                    "voiceover_text": (
+                        "Каждое утро кот Барсик садится за компьютер. "
+                        "Сегодня нужно починить баг, который не давал ему спать всю ночь."
+                    ),
+                },
+                {
+                    "description": "Дебаг",
+                    "image_prompt": (
+                        "A fluffy orange cat staring intensely at a computer screen full of red error messages and code, "
+                        "both paws pressing keys on keyboard, dramatic red lighting from screen illuminating fur, "
+                        "frustrated squinting expression, 3D Pixar style, cinematic dramatic lighting"
+                    ),
+                    "video_prompt": (
+                        "The cat frantically types on keyboard with both paws, red error messages flash on screen "
+                        "one after another, the cat grabs his head with both paws in frustration, "
+                        "dramatic camera shake, intense close-up of the cat's frustrated face"
+                    ),
+                    "voiceover_text": (
+                        "Три часа Барсик искал ошибку в коде. "
+                        "Оказалось — он забыл поставить точку с запятой. Одну. Маленькую. Точку."
+                    ),
+                },
+                {
+                    "description": "Перерыв",
+                    "image_prompt": (
+                        "A fluffy orange cat peacefully sleeping curled up on a computer keyboard, "
+                        "monitor showing a blue progress bar at 50 percent with text compiling, "
+                        "steaming coffee mug with cat paw print nearby, soft warm blue ambient light, "
+                        "3D Pixar style, cozy peaceful atmosphere"
+                    ),
+                    "video_prompt": (
+                        "The cat slowly lies down on the keyboard, curls into a ball and falls asleep peacefully, "
+                        "on the screen the progress bar slowly moves forward, "
+                        "gentle steam rises from the coffee mug, soft camera pan to the right"
+                    ),
+                    "voiceover_text": (
+                        "Пока код компилируется — можно и вздремнуть. "
+                        "Барсик — настоящий мастер тайм-менеджмента."
+                    ),
+                },
+                {
+                    "description": "Победа",
+                    "image_prompt": (
+                        "A fluffy orange cat leaping from office chair with both paws raised high in celebration, "
+                        "computer screen glowing bright green with large text Build Successful, "
+                        "colorful confetti falling everywhere, party atmosphere with streamers, "
+                        "3D Pixar style, joyful dynamic pose, energetic composition"
+                    ),
+                    "video_prompt": (
+                        "The cat leaps up from the chair with paws raised triumphantly in the air, "
+                        "confetti bursts from above in all colors, the screen flashes bright green, "
+                        "the cat does a little victory dance wiggling its body, "
+                        "energetic camera zoom out revealing the whole festive celebration scene"
+                    ),
+                    "voiceover_text": (
+                        "Готово! Билд прошёл успешно! "
+                        "Барсик — лучший программист в мире. По крайней мере, он сам так считает."
+                    ),
+                },
+            ],
+        },
+    ]
+
+    def generate(self, episode_number: int = 1) -> ScenarioConfig:
+        episode = self.EPISODES[(episode_number - 1) % len(self.EPISODES)]
+
+        scenes = []
+        for i, s in enumerate(episode["scenes"]):
+            scenes.append(SceneConfig(
+                scene_id=f"scene_{i+1:02d}",
+                description=s["description"],
+                image_prompt=s["image_prompt"],
+                video_prompt=s["video_prompt"],
+                voiceover_text=s["voiceover_text"],
+                duration=5.0,
+            ))
+
+        return ScenarioConfig(
+            title=episode["title"],
+            series_name="Кот-программист Барсик",
+            episode_number=episode_number,
+            style_prompt=(
+                "3D Pixar animation style, highly detailed fur textures, "
+                "cinematic lighting, cute anthropomorphic cat character, "
+                "cozy tech office environment, vibrant colors"
+            ),
+            negative_prompt="blurry, low quality, text, watermark, deformed, realistic photo, ugly",
+            character_descriptions={"Барсик": self.CHARACTER_DESC},
+            scenes=scenes,
+        )

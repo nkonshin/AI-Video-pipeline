@@ -4,6 +4,7 @@ from pipeline.generators.scenario_gen import (
     CharacterRemixGenerator,
     FruitSoapOperaGenerator,
     MascotContentGenerator,
+    CatProgrammerGenerator,
 )
 from backend.schemas import ScenarioGenerate
 
@@ -28,6 +29,9 @@ def generate_scenario(request: ScenarioGenerate) -> dict:
             company_name=request.company_name or "",
             episode_number=request.episode_number,
         )
+    elif content_type == "cat-programmer":
+        gen = CatProgrammerGenerator()
+        scenario = gen.generate(episode_number=request.episode_number)
     else:
         raise ValueError(f"Unknown content type: {content_type}")
 

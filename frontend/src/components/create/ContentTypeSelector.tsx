@@ -28,6 +28,12 @@ const CONTENT_TYPES: ContentType[] = [
     descKey: 'create.mascotDesc',
   },
   {
+    id: 'cat-programmer',
+    labelKey: 'create.catProgrammer',
+    emoji: '\u{1F431}',
+    descKey: 'create.catProgrammerDesc',
+  },
+  {
     id: 'custom',
     labelKey: 'create.custom',
     emoji: '\u{270F}\u{FE0F}',
@@ -49,7 +55,7 @@ export default function ContentTypeSelector({
   return (
     <div>
       <h2 className="text-sm font-medium text-gray-400 mb-3">{t('create.contentType')}</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
         {CONTENT_TYPES.map((ct) => {
           const isSelected = selected === ct.id;
           return (

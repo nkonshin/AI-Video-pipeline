@@ -52,6 +52,8 @@ const translations: Record<string, Record<Lang, string>> = {
   'create.fruitSoap': { en: 'Fruit Soap Opera', ru: 'Семейка Ягодок' },
   'create.characterRemix': { en: 'Character Remix', ru: 'Ремикс персонажей' },
   'create.mascot': { en: 'Business Mascot', ru: 'Бизнес-маскот' },
+  'create.catProgrammer': { en: 'Cat Programmer', ru: 'Кот-программист' },
+  'create.catProgrammerDesc': { en: 'Barsik the coding cat', ru: 'Кот Барсик и его код' },
   'create.custom': { en: 'Custom', ru: 'Свой сценарий' },
   'create.fruitSoapDesc': { en: 'Family fruit drama series', ru: 'Семейная драма фруктов' },
   'create.characterRemixDesc': { en: 'Famous chars in viral contexts', ru: 'Известные персонажи в вирусных контекстах' },
