@@ -17,6 +17,54 @@ from backend.services.video_service import run_pipeline_with_progress
 router = APIRouter(prefix="/api/videos", tags=["videos"])
 
 
+def _normalize_config(raw: dict) -> dict:
+    """Convert frontend scenario_config format to PipelineConfig format.
+
+    Frontend sends:
+      { scenes: [...], image_model: {model_id, ...}, video_model: {model_id, ...}, tts: {voice} }
+
+    Pipeline expects:
+      { scenario: {title, scenes: [...]}, image_model: {model_id, ...}, video_model: {model_id, ...}, tts: {...} }
+    """
+    # If already in pipeline format (has scenario.scenes), return as-is
+    if "scenario" in raw and "scenes" in raw.get("scenario", {}):
+        return raw
+
+    config: dict = {}
+
+    # Build scenario object
+    scenes = raw.get("scenes", [])
+    config["scenario"] = {
+        "title": raw.get("title", "Generated Video"),
+        "series_name": raw.get("series_name", "Video Pipeline"),
+        "episode_number": raw.get("episode_number", 1),
+        "scenes": scenes,
+    }
+
+    # Image model
+    img = raw.get("image_model", {})
+    if isinstance(img, dict) and img:
+        model_id = img.pop("model_id", "black-forest-labs/flux-dev")
+        config["image_model"] = {"model_id": model_id, "extra_params": img}
+    elif isinstance(img, str):
+        config["image_model"] = {"model_id": img}
+
+    # Video model
+    vid = raw.get("video_model", {})
+    if isinstance(vid, dict) and vid:
+        model_id = vid.pop("model_id", "minimax/hailuo-2.3")
+        config["video_model"] = {"model_id": model_id, "extra_params": vid}
+    elif isinstance(vid, str):
+        config["video_model"] = {"model_id": vid}
+
+    # TTS
+    tts = raw.get("tts", {})
+    if isinstance(tts, dict) and tts:
+        config["tts"] = tts
+
+    return config
+
+
 async def run_generation_task(video_id: str, scenario_config: dict, session_factory):
     """Background task that runs the pipeline and updates the DB."""
     async with session_factory() as session:
@@ -29,9 +77,10 @@ async def run_generation_task(video_id: str, scenario_config: dict, session_fact
         await session.commit()
 
         try:
+            pipeline_config = _normalize_config(scenario_config)
             result = await run_pipeline_with_progress(
                 job_id=video_id,
-                config_dict=scenario_config,
+                config_dict=pipeline_config,
             )
             video.status = "completed"
             video.completed_at = datetime.now(timezone.utc)
