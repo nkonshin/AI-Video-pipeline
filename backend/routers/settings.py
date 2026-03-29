@@ -65,6 +65,34 @@ async def update_settings(body: SettingsUpdate, session: AsyncSession = Depends(
     return SettingsResponse(**settings)
 
 
+@router.post("/validate-model")
+async def validate_model(body: dict, session: AsyncSession = Depends(get_session)):
+    """Check if a Replicate model ID is valid by querying the API."""
+    model_id = body.get("model_id", "").strip()
+    if not model_id or "/" not in model_id:
+        return {"valid": False, "error": "Model ID must be in format 'owner/name'"}
+
+    settings = await _get_all_settings(session)
+    token = settings.get("replicate_api_token", "")
+    if not token:
+        return {"valid": False, "error": "Replicate API token not configured"}
+
+    try:
+        import replicate
+        client = replicate.Client(api_token=token)
+        model = client.models.get(model_id)
+        description = (model.description or "")[:120]
+        return {
+            "valid": True,
+            "model_id": model_id,
+            "name": model.name,
+            "owner": model.owner,
+            "description": description,
+        }
+    except Exception as e:
+        return {"valid": False, "error": f"Model not found: {model_id}"}
+
+
 @router.get("/budget", response_model=BudgetResponse)
 async def get_budget(session: AsyncSession = Depends(get_session)):
     settings = await _get_all_settings(session)

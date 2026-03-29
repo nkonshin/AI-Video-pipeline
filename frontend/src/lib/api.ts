@@ -73,4 +73,8 @@ export const api = {
   updateSettings: (data: Partial<Settings>) =>
     request<Settings>('/api/settings', { method: 'PUT', body: JSON.stringify(data) }),
   getBudget: () => request<Budget>('/api/settings/budget'),
+  validateModel: (model_id: string) =>
+    request<{ valid: boolean; model_id?: string; name?: string; owner?: string; description?: string; error?: string }>(
+      '/api/settings/validate-model', { method: 'POST', body: JSON.stringify({ model_id }) }
+    ),
 };
