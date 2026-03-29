@@ -125,8 +125,16 @@ class PipelineOrchestrator:
         audio_paths: dict[str, Path] = {}
         if not skip_tts:
             log.info("[Pipeline] === Stage 3: TTS Voiceover ===")
-            tts_gen = TTSGenerator(self.config.tts)
+            tts_client = None
+            if self.config.tts.engine == "replicate":
+                tts_client = ReplicateClient(
+                    api_token=self.env.replicate_api_token,
+                    budget_limit=50.0,
+                )
+            tts_gen = TTSGenerator(self.config.tts, replicate_client=tts_client)
             audio_paths = tts_gen.generate_all(scenes, self.run_dirs["audio"])
+            if tts_client:
+                tts_client.close()
         elif audio_dir:
             audio_paths = _load_existing(audio_dir, scenes, ["mp3", "wav", "ogg"])
         result["audio"] = {k: str(v) for k, v in audio_paths.items()}
