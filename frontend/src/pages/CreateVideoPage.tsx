@@ -1,16 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../lib/api';
-import type { Budget } from '../lib/types';
+import type { Budget, Settings } from '../lib/types';
 import ContentTypeSelector from '../components/create/ContentTypeSelector';
 import SceneEditor from '../components/create/SceneEditor';
 import type { Scene } from '../components/create/SceneEditor';
-import AdvancedSettings, {
-  IMAGE_MODELS,
-  VIDEO_MODELS,
-  VOICES,
-} from '../components/create/AdvancedSettings';
+import AdvancedSettings from '../components/create/AdvancedSettings';
 import CostEstimate from '../components/create/CostEstimate';
 
 export default function CreateVideoPage() {
@@ -18,9 +14,9 @@ export default function CreateVideoPage() {
 
   const [contentType, setContentType] = useState('');
   const [scenes, setScenes] = useState<Scene[]>([]);
-  const [imageModel, setImageModel] = useState(IMAGE_MODELS[0].id as string);
-  const [videoModel, setVideoModel] = useState(VIDEO_MODELS[0].id as string);
-  const [ttsVoice, setTtsVoice] = useState<string>(VOICES[0]);
+  const [imageModel, setImageModel] = useState('');
+  const [videoModel, setVideoModel] = useState('');
+  const [ttsVoice, setTtsVoice] = useState('');
   const [generating, setGenerating] = useState(false);
   const [loadingScenario, setLoadingScenario] = useState(false);
 
@@ -28,6 +24,21 @@ export default function CreateVideoPage() {
     queryKey: ['budget'],
     queryFn: () => api.getBudget(),
   });
+
+  // Load default models from Settings API
+  const { data: settings } = useQuery<Settings>({
+    queryKey: ['settings'],
+    queryFn: () => api.getSettings(),
+  });
+
+  // Apply saved defaults once loaded (only on first load)
+  useEffect(() => {
+    if (settings && !imageModel) {
+      setImageModel(settings.default_image_model);
+      setVideoModel(settings.default_video_model);
+      setTtsVoice(settings.default_tts_voice);
+    }
+  }, [settings]);
 
   const handleSelectType = async (id: string) => {
     setContentType(id);
@@ -44,7 +55,6 @@ export default function CreateVideoPage() {
       return;
     }
 
-    // Auto-generate scenario from API
     setLoadingScenario(true);
     try {
       const scenario = await api.generateScenario({ content_type: id });
@@ -68,7 +78,6 @@ export default function CreateVideoPage() {
         );
       }
     } catch {
-      // If API fails, give the user an empty scene to work with
       setScenes([
         {
           scene_id: crypto.randomUUID?.() ?? String(Date.now()),
@@ -99,14 +108,12 @@ export default function CreateVideoPage() {
       await api.startGeneration(video.id);
       navigate('/');
     } catch {
-      // Error is shown via global handler or could add toast here
       setGenerating(false);
     }
   };
 
   return (
     <div className="space-y-8">
-      {/* Header */}
       <div>
         <h1 className="text-xl font-semibold text-gray-200">Create Video</h1>
         <p className="text-gray-500 text-sm mt-1">
@@ -114,10 +121,8 @@ export default function CreateVideoPage() {
         </p>
       </div>
 
-      {/* Content type */}
       <ContentTypeSelector selected={contentType} onSelect={handleSelectType} />
 
-      {/* Loading indicator for scenario generation */}
       {loadingScenario && (
         <div className="flex items-center gap-2 text-sm text-gray-400">
           <div className="h-4 w-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
@@ -125,10 +130,8 @@ export default function CreateVideoPage() {
         </div>
       )}
 
-      {/* Scene editor */}
       <SceneEditor scenes={scenes} onChange={setScenes} />
 
-      {/* Advanced settings + cost estimate in 2-column layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <AdvancedSettings

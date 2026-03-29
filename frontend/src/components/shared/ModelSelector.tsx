@@ -55,7 +55,7 @@ export function ModelSelector({ label, value, onChange, presets, priceUnit }: Pr
     <div>
       <label className="block text-xs text-gray-500 mb-1.5">{label}</label>
 
-      {/* Preset buttons */}
+      {/* Preset buttons + saved custom model */}
       <div className="flex flex-wrap gap-1.5 mb-2">
         {presets.map((m) => (
           <button
@@ -74,11 +74,21 @@ export function ModelSelector({ label, value, onChange, presets, priceUnit }: Pr
             )}
           </button>
         ))}
+        {/* Show saved custom model as a button if it's not in presets */}
+        {isCustom && !customMode && (
+          <button
+            type="button"
+            onClick={() => onChange(value)}
+            className="px-2.5 py-1.5 rounded-lg text-[11px] bg-violet-500/15 border border-violet-500/30 text-violet-300"
+          >
+            {value.split('/').pop()} <span className="text-gray-500">(custom)</span>
+          </button>
+        )}
         <button
           type="button"
           onClick={() => { setCustomMode(true); setValidationResult(null); }}
           className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] transition-all ${
-            customMode || isCustom
+            customMode
               ? 'bg-violet-500/15 border border-violet-500/30 text-violet-300'
               : 'bg-white/[0.03] border border-white/[0.06] text-gray-400 hover:border-white/[0.12]'
           }`}
