@@ -48,7 +48,8 @@ class VideoGenerator:
     def _build_input(self, scene: SceneConfig, image_path: Path) -> dict[str, Any]:
         """Build model-specific input parameters."""
         model = self.config.model_id
-        image_uri = _to_data_uri(image_path) if _needs_data_uri(model) else open(image_path, "rb")
+        # Always use data URI — ensures correct MIME type for all models
+        image_uri = _to_data_uri(image_path)
 
         params: dict[str, Any] = {**self.config.extra_params}
 
@@ -75,6 +76,11 @@ class VideoGenerator:
                 "duration": self.config.duration,
             })
         elif "veo" in model:
+            params.update({
+                "prompt": scene.description or scene.image_prompt,
+                "image": image_uri,
+            })
+        elif "grok" in model or "xai" in model:
             params.update({
                 "prompt": scene.description or scene.image_prompt,
                 "image": image_uri,
