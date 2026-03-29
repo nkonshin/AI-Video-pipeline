@@ -43,9 +43,25 @@ function Tooltip({ text }: { text: string }) {
         <Info className="h-3 w-3" />
       </span>
       {show && (
-        <span className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1.5 rounded-lg bg-gray-800 border border-white/[0.1] text-[11px] text-gray-300 leading-relaxed max-w-[240px] w-max shadow-lg whitespace-normal">
+        <span className="fixed z-[9999] px-3 py-2 rounded-lg bg-gray-900 border border-white/[0.15] text-[11px] text-gray-300 leading-relaxed max-w-[280px] shadow-xl whitespace-normal"
+          style={{
+            position: 'fixed',
+            transform: 'translate(-50%, -100%)',
+            marginTop: '-8px',
+            pointerEvents: 'none',
+          }}
+          ref={(el) => {
+            if (el) {
+              const trigger = el.previousElementSibling as HTMLElement;
+              if (trigger) {
+                const rect = trigger.getBoundingClientRect();
+                el.style.left = `${rect.left + rect.width / 2}px`;
+                el.style.top = `${rect.top - 8}px`;
+              }
+            }
+          }}
+        >
           {text}
-          <span className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800" />
         </span>
       )}
     </span>

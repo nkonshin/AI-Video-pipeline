@@ -167,6 +167,8 @@ export default function CreateVideoPage() {
             sceneCount={scenes.length}
             imageModel={imageModel}
             videoModel={videoModel}
+            ttsEngine={ttsEngine}
+            ttsModel={ttsModel}
             budgetRemaining={budget?.remaining ?? null}
             onGenerate={handleGenerate}
             generating={generating}

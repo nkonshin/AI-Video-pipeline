@@ -121,7 +121,9 @@ async def get_model_schema(body: dict, session: AsyncSession = Depends(get_sessi
         params = []
         # Skip internal/complex params, keep user-facing ones
         skip_keys = {"prompt", "image", "video", "audio", "input_image", "input_video",
-                      "seed", "webhook", "webhook_events_filter"}
+                      "seed", "webhook", "webhook_events_filter",
+                      "text",  # TTS text comes from scene voiceover, not user input
+                      }
 
         for key, prop in properties.items():
             if key in skip_keys:
