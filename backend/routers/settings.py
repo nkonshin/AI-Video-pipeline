@@ -89,8 +89,82 @@ async def validate_model(body: dict, session: AsyncSession = Depends(get_session
             "owner": model.owner,
             "description": description,
         }
-    except Exception as e:
+    except Exception:
         return {"valid": False, "error": f"Model not found: {model_id}"}
+
+
+@router.post("/model-schema")
+async def get_model_schema(body: dict, session: AsyncSession = Depends(get_session)):
+    """Get the input parameter schema for a Replicate model."""
+    model_id = body.get("model_id", "").strip()
+    if not model_id or "/" not in model_id:
+        return {"error": "Model ID must be in format 'owner/name'"}
+
+    settings = await _get_all_settings(session)
+    token = settings.get("replicate_api_token", "")
+    if not token:
+        return {"error": "Replicate API token not configured"}
+
+    try:
+        import replicate
+        client = replicate.Client(api_token=token)
+        model = client.models.get(model_id)
+        latest = model.latest_version
+        if not latest:
+            return {"error": "No versions available for this model"}
+
+        schema = latest.openapi_schema
+        input_schema = schema.get("components", {}).get("schemas", {}).get("Input", {})
+        properties = input_schema.get("properties", {})
+
+        # Build a clean list of parameters
+        params = []
+        # Skip internal/complex params, keep user-facing ones
+        skip_keys = {"prompt", "image", "video", "audio", "input_image", "input_video",
+                      "seed", "webhook", "webhook_events_filter"}
+
+        for key, prop in properties.items():
+            if key in skip_keys:
+                continue
+
+            param = {
+                "name": key,
+                "title": prop.get("title", key.replace("_", " ").title()),
+                "description": prop.get("description", ""),
+                "type": prop.get("type", "string"),
+            }
+
+            if "default" in prop:
+                param["default"] = prop["default"]
+            if "enum" in prop:
+                param["type"] = "enum"
+                param["options"] = prop["enum"]
+            if "minimum" in prop:
+                param["min"] = prop["minimum"]
+            if "maximum" in prop:
+                param["max"] = prop["maximum"]
+            if "allOf" in prop:
+                # Resolve $ref for enum types
+                for ref in prop["allOf"]:
+                    ref_path = ref.get("$ref", "")
+                    ref_name = ref_path.split("/")[-1] if ref_path else ""
+                    if ref_name:
+                        ref_schema = schema.get("components", {}).get("schemas", {}).get(ref_name, {})
+                        if "enum" in ref_schema:
+                            param["type"] = "enum"
+                            param["options"] = ref_schema["enum"]
+                            param["description"] = ref_schema.get("description", param["description"])
+                if "default" in prop:
+                    param["default"] = prop["default"]
+
+            params.append(param)
+
+        return {
+            "model_id": model_id,
+            "params": params,
+        }
+    except Exception as e:
+        return {"error": f"Failed to fetch schema: {str(e)}"}
 
 
 @router.get("/budget", response_model=BudgetResponse)

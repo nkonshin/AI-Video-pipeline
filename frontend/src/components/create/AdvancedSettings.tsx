@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { ModelSelector } from '../shared/ModelSelector';
+import { ModelParams } from '../shared/ModelParams';
 
 /* ── preset models ── */
 
@@ -62,18 +63,26 @@ interface AdvancedSettingsProps {
   imageModel: string;
   videoModel: string;
   ttsVoice: string;
+  imageParams: Record<string, any>;
+  videoParams: Record<string, any>;
   onImageModelChange: (v: string) => void;
   onVideoModelChange: (v: string) => void;
   onTtsVoiceChange: (v: string) => void;
+  onImageParamsChange: (v: Record<string, any>) => void;
+  onVideoParamsChange: (v: Record<string, any>) => void;
 }
 
 export default function AdvancedSettings({
   imageModel,
   videoModel,
   ttsVoice,
+  imageParams,
+  videoParams,
   onImageModelChange,
   onVideoModelChange,
   onTtsVoiceChange,
+  onImageParamsChange,
+  onVideoParamsChange,
 }: AdvancedSettingsProps) {
   const imgLabel = IMAGE_MODELS.find((m) => m.id === imageModel)?.label ?? imageModel;
   const vidLabel = VIDEO_MODELS.find((m) => m.id === videoModel)?.label ?? videoModel;
@@ -86,17 +95,20 @@ export default function AdvancedSettings({
           <ModelSelector
             label="Image Model"
             value={imageModel}
-            onChange={onImageModelChange}
+            onChange={(v) => { onImageModelChange(v); onImageParamsChange({}); }}
             presets={IMAGE_MODELS}
             priceUnit="img"
           />
+          <ModelParams modelId={imageModel} values={imageParams} onChange={onImageParamsChange} />
+
           <ModelSelector
             label="Video Model"
             value={videoModel}
-            onChange={onVideoModelChange}
+            onChange={(v) => { onVideoModelChange(v); onVideoParamsChange({}); }}
             presets={VIDEO_MODELS}
             priceUnit="clip"
           />
+          <ModelParams modelId={videoModel} values={videoParams} onChange={onVideoParamsChange} />
         </Accordion>
 
         <Accordion title="Voice & TTS" summary={ttsVoice}>

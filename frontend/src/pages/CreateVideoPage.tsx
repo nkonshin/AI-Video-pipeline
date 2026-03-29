@@ -17,6 +17,8 @@ export default function CreateVideoPage() {
   const [imageModel, setImageModel] = useState('');
   const [videoModel, setVideoModel] = useState('');
   const [ttsVoice, setTtsVoice] = useState('');
+  const [imageParams, setImageParams] = useState<Record<string, any>>({});
+  const [videoParams, setVideoParams] = useState<Record<string, any>>({});
   const [generating, setGenerating] = useState(false);
   const [loadingScenario, setLoadingScenario] = useState(false);
 
@@ -100,9 +102,9 @@ export default function CreateVideoPage() {
         content_type: contentType,
         scenario_config: {
           scenes,
-          image_model: imageModel,
-          video_model: videoModel,
-          tts_voice: ttsVoice,
+          image_model: { model_id: imageModel, ...imageParams },
+          video_model: { model_id: videoModel, ...videoParams },
+          tts: { voice: ttsVoice },
         },
       });
       await api.startGeneration(video.id);
@@ -138,9 +140,13 @@ export default function CreateVideoPage() {
             imageModel={imageModel}
             videoModel={videoModel}
             ttsVoice={ttsVoice}
+            imageParams={imageParams}
+            videoParams={videoParams}
             onImageModelChange={setImageModel}
             onVideoModelChange={setVideoModel}
             onTtsVoiceChange={setTtsVoice}
+            onImageParamsChange={setImageParams}
+            onVideoParamsChange={setVideoParams}
           />
         </div>
         <div>

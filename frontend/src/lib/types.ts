@@ -99,6 +99,17 @@ export interface PipelineProgress {
   cost_so_far: number;
 }
 
+export interface ModelParam {
+  name: string;
+  title: string;
+  description: string;
+  type: string;
+  default?: any;
+  options?: string[];
+  min?: number;
+  max?: number;
+}
+
 export interface PublishLogEntry {
   id: string;
   video_id: string;
