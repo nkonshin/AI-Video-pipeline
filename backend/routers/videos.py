@@ -44,6 +44,7 @@ def _normalize_config(raw: dict) -> dict:
     # Image model
     img = raw.get("image_model", {})
     if isinstance(img, dict) and img:
+        img = dict(img)  # don't mutate original
         model_id = img.pop("model_id", "black-forest-labs/flux-dev")
         config["image_model"] = {"model_id": model_id, "extra_params": img}
     elif isinstance(img, str):
@@ -52,6 +53,7 @@ def _normalize_config(raw: dict) -> dict:
     # Video model
     vid = raw.get("video_model", {})
     if isinstance(vid, dict) and vid:
+        vid = dict(vid)  # don't mutate original
         model_id = vid.pop("model_id", "minimax/hailuo-2.3")
         config["video_model"] = {"model_id": model_id, "extra_params": vid}
     elif isinstance(vid, str):

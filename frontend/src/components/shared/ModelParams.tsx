@@ -15,7 +15,7 @@ const RECOMMENDED: Record<string, Record<string, any>> = {
   // Video models — vertical, max quality
   'minimax/hailuo-2.3': { duration: 5 },
   'minimax/hailuo-2.3-fast': { duration: 5 },
-  'xai/grok-imagine-video': { duration: 5, resolution: '1080p', aspect_ratio: '9:16' },
+  'xai/grok-imagine-video': { duration: 5, resolution: '720p', aspect_ratio: '9:16' },
   'kwaivgi/kling-v2.5-turbo-pro': { duration: 5, aspect_ratio: '9:16' },
   'wan-video/wan-2.2-i2v-fast': {},
 };

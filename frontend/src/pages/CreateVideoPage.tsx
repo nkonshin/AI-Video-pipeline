@@ -18,7 +18,10 @@ export default function CreateVideoPage() {
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [imageModel, setImageModel] = useState('');
   const [videoModel, setVideoModel] = useState('');
+  const [ttsEngine, setTtsEngine] = useState('edge-tts');
   const [ttsVoice, setTtsVoice] = useState('');
+  const [ttsModel, setTtsModel] = useState('minimax/speech-02-hd');
+  const [ttsParams, setTtsParams] = useState<Record<string, any>>({});
   const [imageParams, setImageParams] = useState<Record<string, any>>({});
   const [videoParams, setVideoParams] = useState<Record<string, any>>({});
   const [generating, setGenerating] = useState(false);
@@ -106,7 +109,9 @@ export default function CreateVideoPage() {
           scenes,
           image_model: { model_id: imageModel, ...imageParams },
           video_model: { model_id: videoModel, ...videoParams },
-          tts: { voice: ttsVoice },
+          tts: ttsEngine === 'replicate'
+            ? { engine: 'replicate', replicate_model_id: ttsModel, extra_params: ttsParams }
+            : { engine: 'edge-tts', voice: ttsVoice },
         },
       });
       await api.startGeneration(video.id);
@@ -141,12 +146,18 @@ export default function CreateVideoPage() {
           <AdvancedSettings
             imageModel={imageModel}
             videoModel={videoModel}
+            ttsEngine={ttsEngine}
             ttsVoice={ttsVoice}
+            ttsModel={ttsModel}
+            ttsParams={ttsParams}
             imageParams={imageParams}
             videoParams={videoParams}
             onImageModelChange={setImageModel}
             onVideoModelChange={setVideoModel}
+            onTtsEngineChange={setTtsEngine}
             onTtsVoiceChange={setTtsVoice}
+            onTtsModelChange={setTtsModel}
+            onTtsParamsChange={setTtsParams}
             onImageParamsChange={setImageParams}
             onVideoParamsChange={setVideoParams}
           />

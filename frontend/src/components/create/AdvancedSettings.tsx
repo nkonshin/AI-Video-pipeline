@@ -20,6 +20,11 @@ export const VIDEO_MODELS = [
   { id: 'wan-video/wan-2.2-i2v-fast', label: 'Wan Fast', price: 0.09 },
 ];
 
+export const TTS_MODELS = [
+  { id: 'minimax/speech-02-hd', label: 'MiniMax Speech HD', price: 0.05 },
+  { id: 'minimax/speech-02-turbo', label: 'MiniMax Speech Turbo', price: 0.03 },
+];
+
 export const VOICES = [
   'ru-RU-DmitryNeural',
   'ru-RU-SvetlanaNeural',
@@ -63,12 +68,18 @@ function Accordion({
 interface AdvancedSettingsProps {
   imageModel: string;
   videoModel: string;
+  ttsEngine: string;
   ttsVoice: string;
+  ttsModel: string;
+  ttsParams: Record<string, any>;
   imageParams: Record<string, any>;
   videoParams: Record<string, any>;
   onImageModelChange: (v: string) => void;
   onVideoModelChange: (v: string) => void;
+  onTtsEngineChange: (v: string) => void;
   onTtsVoiceChange: (v: string) => void;
+  onTtsModelChange: (v: string) => void;
+  onTtsParamsChange: (v: Record<string, any>) => void;
   onImageParamsChange: (v: Record<string, any>) => void;
   onVideoParamsChange: (v: Record<string, any>) => void;
 }
@@ -76,18 +87,27 @@ interface AdvancedSettingsProps {
 export default function AdvancedSettings({
   imageModel,
   videoModel,
+  ttsEngine,
   ttsVoice,
+  ttsModel,
+  ttsParams,
   imageParams,
   videoParams,
   onImageModelChange,
   onVideoModelChange,
+  onTtsEngineChange,
   onTtsVoiceChange,
+  onTtsModelChange,
+  onTtsParamsChange,
   onImageParamsChange,
   onVideoParamsChange,
 }: AdvancedSettingsProps) {
   const t = useT();
   const imgLabel = IMAGE_MODELS.find((m) => m.id === imageModel)?.label ?? imageModel;
   const vidLabel = VIDEO_MODELS.find((m) => m.id === videoModel)?.label ?? videoModel;
+  const ttsSummary = ttsEngine === 'edge-tts'
+    ? `Edge TTS — ${ttsVoice.replace('ru-RU-', '')}`
+    : `Replicate — ${TTS_MODELS.find(m => m.id === ttsModel)?.label ?? ttsModel}`;
 
   return (
     <div>
@@ -113,19 +133,66 @@ export default function AdvancedSettings({
           <ModelParams modelId={videoModel} values={videoParams} onChange={onVideoParamsChange} />
         </Accordion>
 
-        <Accordion title={t('settings.voiceTts')} summary={ttsVoice}>
+        <Accordion title={t('settings.voiceTts')} summary={ttsSummary}>
+          {/* Engine selector */}
           <div>
-            <label className="block text-xs text-gray-500 mb-1">{t('settings.voice')}</label>
-            <select
-              value={ttsVoice}
-              onChange={(e) => onTtsVoiceChange(e.target.value)}
-              className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-indigo-500/50 transition appearance-none"
-            >
-              {VOICES.map((v) => (
-                <option key={v} value={v}>{v}</option>
-              ))}
-            </select>
+            <label className="block text-xs text-gray-500 mb-1.5">TTS Engine</label>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => onTtsEngineChange('edge-tts')}
+                className={`px-3 py-1.5 rounded-lg text-[12px] transition ${
+                  ttsEngine === 'edge-tts'
+                    ? 'bg-indigo-500/15 border border-indigo-500/30 text-indigo-300'
+                    : 'bg-white/[0.03] border border-white/[0.06] text-gray-400 hover:border-white/[0.12]'
+                }`}
+              >
+                Edge TTS (free)
+              </button>
+              <button
+                type="button"
+                onClick={() => onTtsEngineChange('replicate')}
+                className={`px-3 py-1.5 rounded-lg text-[12px] transition ${
+                  ttsEngine === 'replicate'
+                    ? 'bg-violet-500/15 border border-violet-500/30 text-violet-300'
+                    : 'bg-white/[0.03] border border-white/[0.06] text-gray-400 hover:border-white/[0.12]'
+                }`}
+              >
+                Replicate (paid)
+              </button>
+            </div>
           </div>
+
+          {/* Edge TTS voice selector */}
+          {ttsEngine === 'edge-tts' && (
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">{t('settings.voice')}</label>
+              <select
+                value={ttsVoice}
+                onChange={(e) => onTtsVoiceChange(e.target.value)}
+                className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-indigo-500/50 transition appearance-none"
+              >
+                {VOICES.map((v) => (
+                  <option key={v} value={v}>{v}</option>
+                ))}
+              </select>
+              <p className="text-[11px] text-gray-600 mt-1">Microsoft Neural Voices (free, no API key needed)</p>
+            </div>
+          )}
+
+          {/* Replicate TTS model selector */}
+          {ttsEngine === 'replicate' && (
+            <>
+              <ModelSelector
+                label="TTS Model"
+                value={ttsModel}
+                onChange={(v) => { onTtsModelChange(v); onTtsParamsChange({}); }}
+                presets={TTS_MODELS}
+                priceUnit="req"
+              />
+              <ModelParams modelId={ttsModel} values={ttsParams} onChange={onTtsParamsChange} />
+            </>
+          )}
         </Accordion>
 
         <Accordion title={t('settings.subtitles')} summary={t('settings.autoGenerated')}>
