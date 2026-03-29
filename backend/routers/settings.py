@@ -1,5 +1,7 @@
 """Settings API router."""
 
+import os
+
 from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -11,7 +13,7 @@ from backend.schemas import BudgetResponse, SettingsResponse, SettingsUpdate
 router = APIRouter(prefix="/api/settings", tags=["settings"])
 
 _DEFAULTS = {
-    "replicate_api_token": "",
+    "replicate_api_token": os.environ.get("REPLICATE_API_TOKEN", ""),
     "default_image_model": "black-forest-labs/flux-dev",
     "default_video_model": "minimax/hailuo-2.3",
     "default_tts_engine": "edge-tts",

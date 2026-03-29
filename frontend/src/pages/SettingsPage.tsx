@@ -34,6 +34,7 @@ export default function SettingsPage() {
 
   // Local form state
   const [apiToken, setApiToken] = useState('');
+  const [tokenTouched, setTokenTouched] = useState(false);
   const [showToken, setShowToken] = useState(false);
   const [imageModel, setImageModel] = useState('');
   const [videoModel, setVideoModel] = useState('');
@@ -41,10 +42,15 @@ export default function SettingsPage() {
   const [budgetLimit, setBudgetLimit] = useState('');
   const [saved, setSaved] = useState(false);
 
+  // Whether token is configured (masked value from API is non-empty)
+  const tokenConfigured = !!(settings?.replicate_api_token && settings.replicate_api_token !== '');
+
   // Sync remote settings to local state
   useEffect(() => {
     if (settings) {
-      setApiToken(settings.replicate_api_token);
+      // Don't put masked token into input — leave empty, show status instead
+      setApiToken('');
+      setTokenTouched(false);
       setImageModel(settings.default_image_model);
       setVideoModel(settings.default_video_model);
       setTtsVoice(settings.default_tts_voice);
@@ -63,13 +69,17 @@ export default function SettingsPage() {
   });
 
   const handleSave = () => {
-    saveMutation.mutate({
-      replicate_api_token: apiToken,
+    const data: Partial<Settings> = {
       default_image_model: imageModel,
       default_video_model: videoModel,
       default_tts_voice: ttsVoice,
       budget_limit: parseFloat(budgetLimit) || 0,
-    });
+    };
+    // Only send token if user actually typed a new one
+    if (tokenTouched && apiToken) {
+      data.replicate_api_token = apiToken;
+    }
+    saveMutation.mutate(data);
   };
 
   const budgetSpent = budget?.spent ?? settings?.budget_spent ?? 0;
@@ -133,12 +143,18 @@ export default function SettingsPage() {
             <label className="block text-xs text-gray-500 mb-1">
               Replicate API Token
             </label>
+            {tokenConfigured && !tokenTouched && (
+              <div className="flex items-center gap-2 mb-2 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                <CheckCircle className="h-3.5 w-3.5 text-emerald-400" />
+                <span className="text-xs text-emerald-300">Token configured ({settings?.replicate_api_token})</span>
+              </div>
+            )}
             <div className="relative">
               <input
                 type={showToken ? 'text' : 'password'}
                 value={apiToken}
-                onChange={(e) => setApiToken(e.target.value)}
-                placeholder="r8_..."
+                onChange={(e) => { setApiToken(e.target.value); setTokenTouched(true); }}
+                placeholder={tokenConfigured ? 'Enter new token to replace...' : 'r8_...'}
                 className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2.5 text-sm text-gray-300 pr-10 focus:outline-none focus:border-indigo-500/50 transition"
               />
               <button
