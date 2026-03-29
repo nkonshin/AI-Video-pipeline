@@ -52,17 +52,18 @@ class VideoGenerator:
     def _get_audio_prompt(self, scene: SceneConfig) -> str:
         """Build prompt for models that generate their own audio (e.g. Grok).
 
-        Combines video action description with voiceover/dialogue text
-        so the model generates both visuals and speech in one pass.
+        Combines video action description with voiceover narration.
+        Voiceover text is treated as narrator/voiceover, not character dialogue.
+        For character dialogue, include it directly in video_prompt with quotes.
         """
         parts = []
         # Action/visual description
         action = scene.video_prompt or scene.description
         if action:
             parts.append(action)
-        # Dialogue/narration — include as spoken text
+        # Narration / voiceover
         if scene.voiceover_text:
-            parts.append(f'The character says: "{scene.voiceover_text}"')
+            parts.append(f'Narrator voiceover: "{scene.voiceover_text}"')
         return ". ".join(parts) if parts else scene.image_prompt
 
     def _build_input(self, scene: SceneConfig, image_path: Path) -> dict[str, Any]:
