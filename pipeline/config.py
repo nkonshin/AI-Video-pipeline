@@ -85,12 +85,13 @@ class SubtitleConfig(BaseModel):
     """Subtitle / text overlay settings."""
     enabled: bool = True
     font: str = "Arial"
-    font_size: int = 48
+    font_size: int = 22
     color: str = "white"
     stroke_color: str = "black"
-    stroke_width: int = 2
+    stroke_width: int = 3
     position: str = "bottom"  # top, center, bottom
-    max_chars_per_line: int = 35
+    max_chars_per_line: int = 25
+    margin_bottom: int = 60
 
 
 class MusicConfig(BaseModel):

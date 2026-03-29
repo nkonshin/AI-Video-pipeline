@@ -138,15 +138,18 @@ class SubtitleGenerator:
         # Escape path for ffmpeg filter
         escaped = str(srt_path).replace("\\", "\\\\").replace(":", "\\:")
 
+        margin_v = getattr(self.config, 'margin_bottom', 60)
         style = (
             f"FontName={self.config.font},"
             f"FontSize={self.config.font_size},"
             f"PrimaryColour=&H00FFFFFF,"  # white
             f"OutlineColour=&H00000000,"  # black outline
+            f"BackColour=&H80000000,"  # semi-transparent shadow
             f"Outline={self.config.stroke_width},"
-            f"Shadow=0,"
+            f"Shadow=2,"
+            f"Bold=1,"
             f"Alignment=2,"  # bottom center
-            f"MarginV=40"
+            f"MarginV={margin_v}"
         )
 
         if self.config.position == "top":
