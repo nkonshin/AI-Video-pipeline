@@ -1,8 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Settings2, Loader, ChevronDown, ChevronRight } from 'lucide-react';
+import { Settings2, Loader, ChevronDown, ChevronRight, Info } from 'lucide-react';
 import { api } from '../../lib/api';
 import type { ModelParam } from '../../lib/types';
+
+// Recommended defaults for video pipeline use case
+const RECOMMENDED: Record<string, Record<string, any>> = {
+  // Image models — vertical 9:16 for Shorts/Reels
+  'black-forest-labs/flux-2-max': { width: 1080, height: 1920, aspect_ratio: '9:16', output_format: 'png', output_quality: 95, safety_tolerance: 5 },
+  'black-forest-labs/flux-1.1-pro': { width: 1080, height: 1920, aspect_ratio: '9:16', output_format: 'png', output_quality: 95 },
+  'black-forest-labs/flux-dev': { width: 1080, height: 1920, aspect_ratio: '9:16', output_format: 'png' },
+  'black-forest-labs/flux-schnell': { width: 1080, height: 1920, aspect_ratio: '9:16', output_format: 'png' },
+  'stability-ai/sdxl': { width: 1080, height: 1920 },
+  // Video models — vertical, max quality
+  'minimax/hailuo-2.3': { duration: 5 },
+  'minimax/hailuo-2.3-fast': { duration: 5 },
+  'xai/grok-imagine-video': { duration: 5, resolution: '1080p', aspect_ratio: '9:16' },
+  'kwaivgi/kling-v2.5-turbo-pro': { duration: 5, aspect_ratio: '9:16' },
+  'wan-video/wan-2.2-i2v-fast': {},
+};
 
 interface Props {
   modelId: string;
@@ -10,15 +26,53 @@ interface Props {
   onChange: (values: Record<string, any>) => void;
 }
 
+/* ── Tooltip ── */
+
+function Tooltip({ text }: { text: string }) {
+  const [show, setShow] = useState(false);
+
+  if (!text) return null;
+
+  return (
+    <span className="relative inline-flex ml-1">
+      <span
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+        className="cursor-help text-gray-600 hover:text-gray-400 transition"
+      >
+        <Info className="h-3 w-3" />
+      </span>
+      {show && (
+        <span className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1.5 rounded-lg bg-gray-800 border border-white/[0.1] text-[11px] text-gray-300 leading-relaxed max-w-[240px] w-max shadow-lg whitespace-normal">
+          {text}
+          <span className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800" />
+        </span>
+      )}
+    </span>
+  );
+}
+
+/* ── Field Label ── */
+
+function FieldLabel({ title, description, range }: { title: string; description: string; range?: string }) {
+  return (
+    <label className="flex items-center gap-0.5 text-[11px] text-gray-500 mb-1">
+      {title}
+      {range && <span className="text-gray-600 ml-0.5">({range})</span>}
+      <Tooltip text={description} />
+    </label>
+  );
+}
+
+/* ── Param Field ── */
+
 function ParamField({ param, value, onChange }: { param: ModelParam; value: any; onChange: (v: any) => void }) {
   const displayValue = value ?? param.default ?? '';
 
   if (param.type === 'enum' && param.options) {
     return (
       <div>
-        <label className="block text-[11px] text-gray-500 mb-1" title={param.description}>
-          {param.title}
-        </label>
+        <FieldLabel title={param.title} description={param.description} />
         <select
           value={displayValue}
           onChange={(e) => onChange(e.target.value)}
@@ -33,14 +87,10 @@ function ParamField({ param, value, onChange }: { param: ModelParam; value: any;
   }
 
   if (param.type === 'integer' || param.type === 'number') {
+    const range = param.min != null && param.max != null ? `${param.min}-${param.max}` : undefined;
     return (
       <div>
-        <label className="block text-[11px] text-gray-500 mb-1" title={param.description}>
-          {param.title}
-          {param.min != null && param.max != null && (
-            <span className="text-gray-600 ml-1">({param.min}-{param.max})</span>
-          )}
-        </label>
+        <FieldLabel title={param.title} description={param.description} range={range} />
         <input
           type="number"
           value={displayValue}
@@ -62,19 +112,17 @@ function ParamField({ param, value, onChange }: { param: ModelParam; value: any;
           onChange={(e) => onChange(e.target.checked)}
           className="rounded border-white/[0.06] bg-white/[0.03] text-indigo-500 focus:ring-indigo-500/30"
         />
-        <label className="text-[12px] text-gray-400" title={param.description}>
+        <span className="flex items-center gap-0.5 text-[12px] text-gray-400">
           {param.title}
-        </label>
+          <Tooltip text={param.description} />
+        </span>
       </div>
     );
   }
 
-  // String fallback
   return (
     <div>
-      <label className="block text-[11px] text-gray-500 mb-1" title={param.description}>
-        {param.title}
-      </label>
+      <FieldLabel title={param.title} description={param.description} />
       <input
         type="text"
         value={displayValue}
@@ -85,6 +133,8 @@ function ParamField({ param, value, onChange }: { param: ModelParam; value: any;
   );
 }
 
+/* ── Main Component ── */
+
 export function ModelParams({ modelId, values, onChange }: Props) {
   const [expanded, setExpanded] = useState(false);
 
@@ -92,17 +142,23 @@ export function ModelParams({ modelId, values, onChange }: Props) {
     queryKey: ['model-schema', modelId],
     queryFn: () => api.getModelSchema(modelId),
     enabled: !!modelId && modelId.includes('/'),
-    staleTime: 5 * 60 * 1000, // cache for 5 min
+    staleTime: 5 * 60 * 1000,
   });
 
-  // Set defaults when schema loads
+  // Apply recommended defaults when schema loads
   useEffect(() => {
     if (data?.params && Object.keys(values).length === 0) {
+      // Start with API defaults
       const defaults: Record<string, any> = {};
       for (const p of data.params) {
         if (p.default != null) {
           defaults[p.name] = p.default;
         }
+      }
+      // Override with our recommended values for video pipeline
+      const recommended = RECOMMENDED[modelId];
+      if (recommended) {
+        Object.assign(defaults, recommended);
       }
       if (Object.keys(defaults).length > 0) {
         onChange(defaults);
@@ -139,7 +195,7 @@ export function ModelParams({ modelId, values, onChange }: Props) {
         Model Parameters
         {changedCount > 0 && (
           <span className="ml-1 px-1.5 py-0.5 rounded bg-indigo-500/15 text-indigo-300 text-[10px]">
-            {changedCount} changed
+            {changedCount} customized
           </span>
         )}
         <span className="text-gray-600">({params.length} available)</span>
