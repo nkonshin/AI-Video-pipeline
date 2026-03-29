@@ -51,3 +51,20 @@ app.mount("/media", StaticFiles(directory=str(_output_dir)), name="media")
 @app.get("/api/health")
 async def health_check():
     return {"status": "ok"}
+
+
+# Serve frontend build in production (when frontend/dist exists)
+_frontend_dist = Path(__file__).resolve().parent.parent / "frontend" / "dist"
+if _frontend_dist.is_dir():
+    from fastapi.responses import FileResponse
+
+    # Serve static assets (JS, CSS, etc.)
+    app.mount("/assets", StaticFiles(directory=str(_frontend_dist / "assets")), name="frontend-assets")
+
+    # Catch-all: serve index.html for client-side routing
+    @app.get("/{path:path}")
+    async def serve_spa(path: str):
+        file_path = _frontend_dist / path
+        if file_path.is_file():
+            return FileResponse(file_path)
+        return FileResponse(_frontend_dist / "index.html")
