@@ -18,6 +18,7 @@ import {
   VIDEO_MODELS,
   VOICES,
 } from '../components/create/AdvancedSettings';
+import { ModelSelector } from '../components/shared/ModelSelector';
 
 export default function SettingsPage() {
   const queryClient = useQueryClient();
@@ -181,39 +182,21 @@ export default function SettingsPage() {
             </h2>
           </div>
 
-          <div>
-            <label className="block text-xs text-gray-500 mb-1">
-              Image Model
-            </label>
-            <select
-              value={imageModel}
-              onChange={(e) => setImageModel(e.target.value)}
-              className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2.5 text-sm text-gray-300 focus:outline-none focus:border-indigo-500/50 transition appearance-none"
-            >
-              {IMAGE_MODELS.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          <ModelSelector
+            label="Image Model"
+            value={imageModel}
+            onChange={setImageModel}
+            presets={IMAGE_MODELS}
+            priceUnit="img"
+          />
 
-          <div>
-            <label className="block text-xs text-gray-500 mb-1">
-              Video Model
-            </label>
-            <select
-              value={videoModel}
-              onChange={(e) => setVideoModel(e.target.value)}
-              className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2.5 text-sm text-gray-300 focus:outline-none focus:border-indigo-500/50 transition appearance-none"
-            >
-              {VIDEO_MODELS.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          <ModelSelector
+            label="Video Model"
+            value={videoModel}
+            onChange={setVideoModel}
+            presets={VIDEO_MODELS}
+            priceUnit="clip"
+          />
 
           <div>
             <label className="block text-xs text-gray-500 mb-1">
