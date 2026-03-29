@@ -43,6 +43,10 @@ export const api = {
   deleteVideo: (id: string) => request<void>(`/api/videos/${id}`, { method: 'DELETE' }),
   startGeneration: (id: string) =>
     request<{ id: string; status: string }>(`/api/videos/${id}/generate`, { method: 'POST' }),
+  retryGeneration: (id: string, opts: { skip_images?: boolean; skip_video?: boolean } = {}) =>
+    request<{ id: string; status: string }>(`/api/videos/${id}/retry`, {
+      method: 'POST', body: JSON.stringify(opts),
+    }),
   publishVideo: (id: string, platforms: string[]) =>
     request<Record<string, unknown>>(`/api/videos/${id}/publish`, {
       method: 'POST',

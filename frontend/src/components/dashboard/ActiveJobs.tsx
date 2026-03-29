@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Clapperboard, Clock, X, ChevronDown, ChevronRight, AlertTriangle, Check } from 'lucide-react';
+import { Clapperboard, Clock, X, ChevronDown, ChevronRight, AlertTriangle, Check, RotateCcw } from 'lucide-react';
 import { api } from '../../lib/api';
 import type { VideoList, Video, PipelineProgress } from '../../lib/types';
 import { useT } from '../../lib/i18n';
@@ -49,6 +49,12 @@ function JobCard({ video }: { video: Video }) {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['videos'] }),
   });
 
+  const retryMutation = useMutation({
+    mutationFn: (opts: { skip_images?: boolean; skip_video?: boolean }) =>
+      api.retryGeneration(video.id, opts),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['videos'] }),
+  });
+
   const isFailed = video.status === 'failed';
   const currentStage = progress?.stage || (isFailed ? 'failed' : video.status === 'running' ? 'image_gen' : 'pending');
   const percent = progress?.percent || (isFailed ? 100 : video.status === 'pending' ? 5 : 10);
@@ -79,13 +85,22 @@ function JobCard({ video }: { video: Video }) {
           </button>
         )}
         {isFailed && (
-          <button
-            onClick={() => deleteMutation.mutate()}
-            className="p-1 text-gray-600 hover:text-red-400 transition"
-            title={t('videoDetail.delete')}
-          >
-            <X className="h-4 w-4" />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => retryMutation.mutate({ skip_images: true, skip_video: true })}
+              className="p-1 text-gray-500 hover:text-indigo-400 transition"
+              title="Retry (skip images & video)"
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={() => deleteMutation.mutate()}
+              className="p-1 text-gray-600 hover:text-red-400 transition"
+              title={t('videoDetail.delete')}
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
         )}
         <span className={`text-xs font-mono ${isFailed ? 'text-red-400' : 'text-gray-400'}`}>
           {isFailed ? t('videos.status.failed') : `${percent}%`}

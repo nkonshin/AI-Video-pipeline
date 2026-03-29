@@ -67,7 +67,13 @@ def _normalize_config(raw: dict) -> dict:
     return config
 
 
-async def run_generation_task(video_id: str, scenario_config: dict, session_factory):
+async def run_generation_task(
+    video_id: str,
+    scenario_config: dict,
+    session_factory,
+    skip_images: bool = False,
+    skip_video: bool = False,
+):
     """Background task that runs the pipeline and updates the DB."""
     async with session_factory() as session:
         result_q = await session.execute(select(Video).where(Video.id == video_id))
@@ -83,6 +89,8 @@ async def run_generation_task(video_id: str, scenario_config: dict, session_fact
             result = await run_pipeline_with_progress(
                 job_id=video_id,
                 config_dict=pipeline_config,
+                skip_images=skip_images,
+                skip_video=skip_video,
             )
             video.status = "completed"
             video.completed_at = datetime.now(timezone.utc)
@@ -162,6 +170,33 @@ async def delete_video(video_id: str, session: AsyncSession = Depends(get_sessio
         raise HTTPException(status_code=404, detail="Video not found")
     await session.delete(video)
     await session.commit()
+
+
+@router.post("/{video_id}/retry", status_code=202)
+async def retry_generation(video_id: str, body: dict = None, session: AsyncSession = Depends(get_session)):
+    """Retry generation from a specific stage, reusing existing assets."""
+    result = await session.execute(select(Video).where(Video.id == video_id))
+    video = result.scalar_one_or_none()
+    if not video:
+        raise HTTPException(status_code=404, detail="Video not found")
+    if video.status == "running":
+        raise HTTPException(status_code=409, detail="Generation already in progress")
+
+    body = body or {}
+    skip_images = body.get("skip_images", True)
+    skip_video = body.get("skip_video", True)
+
+    video.status = "running"
+    video.error_message = None
+    await session.commit()
+
+    from backend.database import async_session
+    asyncio.create_task(run_generation_task(
+        video_id, video.scenario_config, async_session,
+        skip_images=skip_images, skip_video=skip_video,
+    ))
+
+    return {"id": video_id, "status": "running", "skip_images": skip_images, "skip_video": skip_video}
 
 
 @router.post("/{video_id}/generate", status_code=202)

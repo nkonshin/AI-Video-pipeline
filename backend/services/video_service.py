@@ -76,6 +76,8 @@ async def run_pipeline_with_progress(
     config_dict: dict[str, Any],
     on_progress: Callable[[dict], Any] | None = None,
     skip_publish: bool = False,
+    skip_images: bool = False,
+    skip_video: bool = False,
 ) -> dict[str, Any]:
     config = PipelineConfig.model_validate(config_dict)
     total_scenes = len(config.scenario.scenes)
@@ -85,7 +87,11 @@ async def run_pipeline_with_progress(
     def sync_run() -> dict[str, Any]:
         env = load_env()
         orchestrator = PipelineOrchestrator(config, env)
-        result = orchestrator.run(skip_publish=skip_publish)
+        result = orchestrator.run(
+            skip_publish=skip_publish,
+            skip_images=skip_images,
+            skip_video=skip_video,
+        )
         return result
 
     try:
